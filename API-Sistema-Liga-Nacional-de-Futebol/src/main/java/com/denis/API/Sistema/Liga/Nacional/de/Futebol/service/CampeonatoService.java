@@ -1,0 +1,32 @@
+package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
+
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoRequest;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoResponse;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Campeonato;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.CampeonatoRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CampeonatoService {
+    private CampeonatoRepository campeonatoRepository;
+
+    public CampeonatoService(CampeonatoRepository campeonatoRepository) {this.campeonatoRepository = campeonatoRepository;}
+
+    public CampeonatoResponse cadastrarCampeonato(CampeonatoRequest dto){
+        try {
+            Campeonato campeonato  = new Campeonato();
+            BeanUtils.copyProperties(dto, campeonato);
+
+            Campeonato salvo = campeonatoRepository.save(campeonato);
+
+            return new CampeonatoResponse(salvo.getId(), salvo.getNome());
+        } catch (DataIntegrityViolationException e){
+            throw new CadastroException("Erro ao cadastrar Campeonato: Dados Inválidos");
+        } catch (Exception e) {
+            throw new CadastroException("Erro inesperado ao cadastrar Campeonato");
+        }
+    }
+}

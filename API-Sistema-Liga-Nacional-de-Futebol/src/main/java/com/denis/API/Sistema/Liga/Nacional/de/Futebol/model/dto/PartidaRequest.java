@@ -5,5 +5,5 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
 
 import java.time.LocalDateTime;
 
-public record PartidaRequire(int rodada, LocalDateTime dataHora, Time timeMandante, Time timeVisitante, Temporada temporada) {
+public record PartidaRequest(int rodada, LocalDateTime dataHora, Time timeMandante, Time timeVisitante, Temporada temporada) {
 }
