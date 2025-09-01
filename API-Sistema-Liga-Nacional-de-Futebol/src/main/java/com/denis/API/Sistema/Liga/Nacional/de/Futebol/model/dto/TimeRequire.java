@@ -1,4 +1,6 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto;
 
-public record TimeRequire() {
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Campeonato;
+
+public record TimeRequire(String nome, String estadio, String nomeTreinador, Campeonato campeonato) {
 }

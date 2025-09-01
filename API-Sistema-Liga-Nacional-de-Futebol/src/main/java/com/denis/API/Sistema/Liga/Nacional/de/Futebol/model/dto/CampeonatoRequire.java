@@ -1,4 +1,4 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto;
 
-public class CampeonatoRequire {
+public record CampeonatoRequire(String nome) {
 }

@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "temporadas")
@@ -16,6 +18,9 @@ public class Temporada {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "concluido", nullable = false)
+    private boolean concluido = false;
+
     @Column(name = "nome", length = 100, nullable = false)
     private String nome;
 
@@ -24,6 +29,12 @@ public class Temporada {
 
     @Column(name = "data_fim", nullable = false)
     private Date dataFim;
+
+    @OneToMany(mappedBy = "temporada", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<EstatisticaTemporadaTime> estatisticaTemporadaTimes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "temporada", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Partida> partidas = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_campeonato", nullable = false)
@@ -38,8 +49,9 @@ public class Temporada {
         this.campeonato = campeonato;
     }
 
-    public Temporada(Long id ,String nome,Date dataInicio,Date dataFim,Campeonato campeonato) {
+    public Temporada(Long id, boolean concluido,String nome,Date dataInicio,Date dataFim,Campeonato campeonato) {
         this.id = id;
+        this.concluido = concluido;
         this.nome = nome;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;

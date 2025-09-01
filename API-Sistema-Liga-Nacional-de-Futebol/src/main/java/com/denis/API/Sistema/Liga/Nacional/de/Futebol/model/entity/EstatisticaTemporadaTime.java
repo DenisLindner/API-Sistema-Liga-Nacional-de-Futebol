@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.repository.cdi.Eager;
 
-@Eager
+@Entity
 @Table(name = "estatisticas_temporada_times")
 @Getter
 @Setter

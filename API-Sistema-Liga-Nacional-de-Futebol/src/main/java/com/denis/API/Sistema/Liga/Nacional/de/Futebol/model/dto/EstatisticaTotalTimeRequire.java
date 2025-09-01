@@ -1,4 +1,6 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto;
 
-public class EstatisticaTotalTimeRequire {
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
+
+public record EstatisticaTotalTimeRequire(Time time) {
 }

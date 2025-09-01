@@ -1,4 +1,6 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto;
 
-public record TemporadaResponse() {
+import java.util.Date;
+
+public record TemporadaResponse(Long id, boolean concluido, String nome, Date dataInicio, Date dataFim, String nome_campeonato) {
 }

@@ -1,4 +1,6 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto;
 
-public record EstatisticasCampeonatoRequire() {
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Campeonato;
+
+public record EstatisticasCampeonatoRequire(Campeonato campeonato) {
 }
