@@ -16,14 +16,12 @@ public class AtletaService {
 
     public AtletaService(AtletaRepository atletaRepository) {this.atletaRepository = atletaRepository;}
 
-    public AtletaResponse cadastrarAtleta(AtletaRequest dto){
+    public Atleta cadastrarAtleta(AtletaRequest dto){
         try {
             Atleta atleta  = new Atleta();
             BeanUtils.copyProperties(dto, atleta);
 
-            Atleta salvo = atletaRepository.save(atleta);
-
-            return new AtletaResponse(salvo.getId(), salvo.getNome(), salvo.getCpf(), salvo.getDataNascimento(), salvo.getDataContratacao(), salvo.getDataFinalContratacao(), salvo.getQuantidadePartidas(), salvo.getCartoesAmarelos(), salvo.getCartoesVermelhos(), salvo.getQuantidadeGols(), salvo.getTime().getNome());
+            return atletaRepository.save(atleta);
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Atleta: Dados Inválidos");
         } catch (Exception e) {

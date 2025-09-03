@@ -15,13 +15,11 @@ public class EstatisticasCampeonatoService {
 
     public EstatisticasCampeonatoService (EstatisticasCampeonatoRepository estatisticasCampeonatoRepository){this.estatisticasCampeonatoRepository = estatisticasCampeonatoRepository;}
 
-    public EstatisticasCampeonatoResponse cadastrarEstatisticasCampeonato(Campeonato campeonato){
+    public void cadastrarEstatisticasCampeonato(Campeonato campeonato){
         try {
             EstatisticasCampeonato estatisticasCampeonato = new EstatisticasCampeonato(campeonato);
 
             EstatisticasCampeonato salvo = estatisticasCampeonatoRepository.save(estatisticasCampeonato);
-
-            return new EstatisticasCampeonatoResponse(salvo.getId(), salvo.getPontos(), salvo.getQuantidadePartidas(), salvo.getGolsFeitos(), salvo.getCartoesAmarelos(), salvo.getCartoesVermelhos(), salvo.getCampeonato().getNome());
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Estatisticas do Campeonato: Dados Inválidos");
         } catch (Exception e) {
