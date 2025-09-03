@@ -6,10 +6,7 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.TimeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/time")
@@ -23,7 +20,7 @@ public class TimeController {
 
     @PostMapping
     public ResponseEntity<TimeResponse> cadastrarTime(@RequestBody TimeRequest dto) {
-        Time time = timeService.cadastrarTime(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new TimeResponse(time));
+        TimeResponse time = timeService.cadastrarTime(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(time);
     }
 }

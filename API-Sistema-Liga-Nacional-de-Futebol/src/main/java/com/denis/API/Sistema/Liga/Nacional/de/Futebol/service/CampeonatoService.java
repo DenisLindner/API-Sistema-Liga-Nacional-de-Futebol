@@ -37,4 +37,14 @@ public class CampeonatoService {
             throw new CadastroException("Erro inesperado ao cadastrar Campeonato");
         }
     }
+
+    public Campeonato buscarCampeonatoPorId(Long id){
+        try {
+            return campeonatoRepository.findById(id).orElseThrow();
+        } catch (DataIntegrityViolationException e){
+            throw new CadastroException("Erro ao cadastrar Campeonato: Dados Inválidos");
+        } catch (Exception e) {
+            throw new CadastroException("Erro inesperado ao cadastrar Campeonato");
+        }
+    }
 }

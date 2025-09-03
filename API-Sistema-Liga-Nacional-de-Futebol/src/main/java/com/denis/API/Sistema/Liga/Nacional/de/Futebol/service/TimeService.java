@@ -2,12 +2,8 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.*;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.EstatisticaTemporadaTimeRepository;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.EstatisticaTotalTimeRepository;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TimeRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +13,28 @@ public class TimeService {
     private TimeRepository timeRepository;
     private EstatisticaTemporadaTimeService estatisticaTemporadaTimeService;
     private EstatisticaTotalTimeService estatisticaTotalTimeService;
+    private CampeonatoService campeonatoService;
 
-    public TimeService(TimeRepository timeRepository, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService, EstatisticaTotalTimeService estatisticaTotalTimeService) {
+    public TimeService(TimeRepository timeRepository, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService, EstatisticaTotalTimeService estatisticaTotalTimeService, CampeonatoService campeonatoService) {
         this.timeRepository = timeRepository;
         this.estatisticaTemporadaTimeService = estatisticaTemporadaTimeService;
         this.estatisticaTotalTimeService = estatisticaTotalTimeService;
+        this.campeonatoService = campeonatoService;
     }
 
-    public Time cadastrarTime (TimeRequest dto){
+    public TimeResponse cadastrarTime (TimeRequest dto) {
         try {
             Time time = new Time();
-            BeanUtils.copyProperties(dto, time);
+            time.setNome(dto.nome());
+            time.setEstadio(dto.estadio());
+            time.setNomeTreinador(dto.nomeTreinador());
+            time.setCampeonato(campeonatoService.buscarCampeonatoPorId(dto.idCampeonato()));
 
             Time salvo = timeRepository.save(time);
 
             estatisticaTotalTimeService.cadastrarEstatisticaTotalTime(salvo);
 
-            return salvo;
+            return new TimeResponse(salvo.getId(), salvo.getNome(), salvo.getEstadio(), salvo.getNomeTreinador(), salvo.getCampeonato().getNome());
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Time: Dados Inválidos");
         } catch (Exception e) {
