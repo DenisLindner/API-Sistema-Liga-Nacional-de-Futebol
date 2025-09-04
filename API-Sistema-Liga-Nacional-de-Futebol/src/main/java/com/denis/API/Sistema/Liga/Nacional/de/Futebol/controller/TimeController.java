@@ -20,7 +20,7 @@ public class TimeController {
 
     @PostMapping
     public ResponseEntity<TimeResponse> cadastrarTime(@RequestBody TimeRequest dto) {
-        TimeResponse time = timeService.cadastrarTime(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(time);
+        Time time = timeService.cadastrarTime(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new TimeResponse(time.getId(), time.getNome(), time.getEstadio(), time.getNomeTreinador(), time.getCampeonato().getNome()));
     }
 }

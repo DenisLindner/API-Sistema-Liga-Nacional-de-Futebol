@@ -23,7 +23,7 @@ public class AtletaController {
     @PostMapping
     public ResponseEntity<AtletaResponse> cadastrarAtleta(@RequestBody AtletaRequest dto){
         Atleta atleta = atletaService.cadastrarAtleta(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AtletaResponse(atleta));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AtletaResponse(atleta.getId(), atleta.getNome(), atleta.getCpf(), atleta.getDataNascimento(), atleta.getDataContratacao(), atleta.getDataFinalContratacao(), atleta.getQuantidadePartidas(), atleta.getCartoesAmarelos(), atleta.getCartoesVermelhos(), atleta.getQuantidadeGols(), atleta.getTime().getNome()));
     }
 
     @PostMapping("/atletas")

@@ -22,6 +22,6 @@ public class CampeonatoController {
     @PostMapping
     public ResponseEntity<CampeonatoResponse> cadastrarCampeonato(@RequestBody CampeonatoRequest dto){
         Campeonato campeonato = campeonatoService.cadastrarCampeonato(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CampeonatoResponse(campeonato));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CampeonatoResponse(campeonato.getId(),campeonato.getNome()));
     }
 }

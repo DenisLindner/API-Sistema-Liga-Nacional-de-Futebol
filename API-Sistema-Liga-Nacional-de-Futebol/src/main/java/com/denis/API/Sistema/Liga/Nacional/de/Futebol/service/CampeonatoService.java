@@ -1,5 +1,6 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoResponse;
@@ -42,9 +43,9 @@ public class CampeonatoService {
         try {
             return campeonatoRepository.findById(id).orElseThrow();
         } catch (DataIntegrityViolationException e){
-            throw new CadastroException("Erro ao cadastrar Campeonato: Dados Inválidos");
+            throw new BuscarException("Erro ao cadastrar Campeonato: Dados Inválidos");
         } catch (Exception e) {
-            throw new CadastroException("Erro inesperado ao cadastrar Campeonato");
+            throw new BuscarException("Erro inesperado ao cadastrar Campeonato");
         }
     }
 }

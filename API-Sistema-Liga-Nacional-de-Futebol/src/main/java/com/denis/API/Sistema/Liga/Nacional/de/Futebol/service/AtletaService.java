@@ -4,6 +4,7 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroExceptio
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.AtletaRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Atleta;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.AtletaRepository;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TimeRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -12,13 +13,22 @@ import org.springframework.stereotype.Service;
 public class AtletaService {
 
     private AtletaRepository atletaRepository;
+    private TimeService timeService;
 
-    public AtletaService(AtletaRepository atletaRepository) {this.atletaRepository = atletaRepository;}
+    public AtletaService(AtletaRepository atletaRepository, TimeService timeService) {
+        this.atletaRepository = atletaRepository;
+        this.timeService = timeService;
+    }
 
     public Atleta cadastrarAtleta(AtletaRequest dto){
         try {
             Atleta atleta  = new Atleta();
-            BeanUtils.copyProperties(dto, atleta);
+            atleta.setNome(dto.nome());
+            atleta.setCpf(dto.cpf());
+            atleta.setDataNascimento(dto.dataNascimento());
+            atleta.setDataContratacao(dto.dataContratacao());
+            atleta.setDataFinalContratacao(dto.dataFinalContratacao());
+            atleta.setTime(timeService.buscarTimePorId(dto.idTime()));
 
             return atletaRepository.save(atleta);
         } catch (DataIntegrityViolationException e){
