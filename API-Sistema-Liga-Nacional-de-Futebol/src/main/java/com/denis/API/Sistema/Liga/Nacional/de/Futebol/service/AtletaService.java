@@ -2,7 +2,6 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.AtletaRequest;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.AtletaResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Atleta;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.AtletaRepository;
 import org.springframework.beans.BeanUtils;

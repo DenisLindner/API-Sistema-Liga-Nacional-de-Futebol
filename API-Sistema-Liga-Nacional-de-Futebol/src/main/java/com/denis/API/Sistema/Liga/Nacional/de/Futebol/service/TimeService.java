@@ -11,13 +11,11 @@ import org.springframework.stereotype.Service;
 public class TimeService {
 
     private TimeRepository timeRepository;
-    private EstatisticaTemporadaTimeService estatisticaTemporadaTimeService;
     private EstatisticaTotalTimeService estatisticaTotalTimeService;
     private CampeonatoService campeonatoService;
 
-    public TimeService(TimeRepository timeRepository, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService, EstatisticaTotalTimeService estatisticaTotalTimeService, CampeonatoService campeonatoService) {
+    public TimeService(TimeRepository timeRepository, EstatisticaTotalTimeService estatisticaTotalTimeService, CampeonatoService campeonatoService) {
         this.timeRepository = timeRepository;
-        this.estatisticaTemporadaTimeService = estatisticaTemporadaTimeService;
         this.estatisticaTotalTimeService = estatisticaTotalTimeService;
         this.campeonatoService = campeonatoService;
     }

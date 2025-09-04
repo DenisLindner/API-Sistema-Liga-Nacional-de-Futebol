@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "atletas")
@@ -23,13 +23,13 @@ public class Atleta {
     private String cpf;
 
     @Column(name = "data_nascimento", nullable = false)
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
     @Column(name = "data_contratacao", nullable = false)
-    private Date dataContratacao;
+    private LocalDate dataContratacao;
 
     @Column(name = "data_final_contratacao", nullable = false)
-    private Date dataFinalContratacao;
+    private LocalDate dataFinalContratacao;
 
     @Column(name = "quantidade_partidas", nullable = false)
     private int quantidadePartidas = 0;
@@ -49,7 +49,7 @@ public class Atleta {
 
     public Atleta() {}
 
-    public Atleta(String nome, String cpf, Date dataNascimento, Date dataContratacao, Date dataFinalContratacao, Time time) {
+    public Atleta(String nome, String cpf, LocalDate dataNascimento, LocalDate dataContratacao, LocalDate dataFinalContratacao, Time time) {
         this.nome = nome;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
@@ -58,7 +58,7 @@ public class Atleta {
         this.time = time;
     }
 
-    public Atleta(Long id, String nome, String cpf, Date dataNascimento, Date dataContratacao, Date dataFinalContratacao, int quantidadePartidas, int cartoesAmarelos, int cartoesVermelhos, int quantidadeGols, Time time) {
+    public Atleta(Long id, String nome, String cpf, LocalDate dataNascimento, LocalDate dataContratacao, LocalDate dataFinalContratacao, int quantidadePartidas, int cartoesAmarelos, int cartoesVermelhos, int quantidadeGols, Time time) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
