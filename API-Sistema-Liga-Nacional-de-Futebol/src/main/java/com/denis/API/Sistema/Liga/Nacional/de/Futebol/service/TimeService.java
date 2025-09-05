@@ -3,7 +3,6 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.*;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Campeonato;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TimeRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,7 +21,7 @@ public class TimeService {
         this.campeonatoService = campeonatoService;
     }
 
-    public Time cadastrarTime (TimeRequest dto) {
+    public TimeResponse cadastrarTime (TimeRequest dto) {
         try {
             Time time = new Time();
             time.setNome(dto.nome());
@@ -30,11 +29,16 @@ public class TimeService {
             time.setNomeTreinador(dto.nomeTreinador());
             time.setCampeonato(campeonatoService.buscarCampeonatoPorId(dto.idCampeonato()));
 
-            Time salvo = timeRepository.save(time);
+            if (time.getCampeonato().getTimes().size() >= 20){
+                throw new CadastroException("Erro ao Cadastrar Time: Quantidade Limite de Times Alcaçada na Competição");
+            } else {
 
-            estatisticaTotalTimeService.cadastrarEstatisticaTotalTime(salvo);
+                Time salvo = timeRepository.save(time);
 
-            return salvo;
+                estatisticaTotalTimeService.cadastrarEstatisticaTotalTime(salvo);
+
+                return new TimeResponse(salvo.getId(), salvo.getNome(), salvo.getEstadio(), salvo.getNomeTreinador(), salvo.getCampeonato().getNome());
+            }
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Time: Dados Inválidos");
         } catch (Exception e) {

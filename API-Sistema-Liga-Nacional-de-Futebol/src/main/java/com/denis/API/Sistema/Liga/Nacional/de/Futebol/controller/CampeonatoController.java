@@ -2,7 +2,6 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.controller;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoResponse;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Campeonato;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.CampeonatoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +18,9 @@ public class CampeonatoController {
 
     public CampeonatoController(CampeonatoService campeonatoService) {this.campeonatoService = campeonatoService;}
 
-    @PostMapping
+    @PostMapping("/cadastrar-campeonato")
     public ResponseEntity<CampeonatoResponse> cadastrarCampeonato(@RequestBody CampeonatoRequest dto){
-        Campeonato campeonato = campeonatoService.cadastrarCampeonato(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CampeonatoResponse(campeonato.getId(),campeonato.getNome()));
+        CampeonatoResponse campeonato = campeonatoService.cadastrarCampeonato(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(campeonato);
     }
 }

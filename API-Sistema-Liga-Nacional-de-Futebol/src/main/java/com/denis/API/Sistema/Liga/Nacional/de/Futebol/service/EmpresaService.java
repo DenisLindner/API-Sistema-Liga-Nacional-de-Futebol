@@ -18,12 +18,12 @@ public class EmpresaService {
         this.empresaRepository = empresaRepository;
     }
 
-    public Empresa cadastrarEmpresa(EmpresaRequest dto){
+    public EmpresaResponse cadastrarEmpresa(EmpresaRequest dto){
         try {
             Empresa empresa = new Empresa();
             BeanUtils.copyProperties(dto, empresa);
-
-            return empresaRepository.save(empresa);
+            Empresa salvo = empresaRepository.save(empresa);
+            return new EmpresaResponse(salvo.getId(), salvo.getNomeEmpresarial(), salvo.getNomeFantasia(), salvo.getCnpj(), salvo.getTelefone());
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Empresa: Dados Inválidos");
         } catch (Exception e) {

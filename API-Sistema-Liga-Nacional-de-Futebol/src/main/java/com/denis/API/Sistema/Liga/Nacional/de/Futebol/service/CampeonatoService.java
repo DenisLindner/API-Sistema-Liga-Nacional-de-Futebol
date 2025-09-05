@@ -6,9 +6,7 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoReques
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Campeonato;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.CampeonatoRepository;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.EstatisticasCampeonatoRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,7 @@ public class CampeonatoService {
         this.estatisticasCampeonatoService = estatisticasCampeonatoService;
     }
 
-    public Campeonato cadastrarCampeonato(CampeonatoRequest dto){
+    public CampeonatoResponse cadastrarCampeonato(CampeonatoRequest dto){
         try {
             Campeonato campeonato  = new Campeonato();
             BeanUtils.copyProperties(dto, campeonato);
@@ -31,7 +29,7 @@ public class CampeonatoService {
 
             estatisticasCampeonatoService.cadastrarEstatisticasCampeonato(salvo);
 
-            return salvo;
+            return new CampeonatoResponse(salvo.getId(),salvo.getNome());
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Campeonato: Dados Inválidos");
         } catch (Exception e) {
@@ -43,9 +41,9 @@ public class CampeonatoService {
         try {
             return campeonatoRepository.findById(id).orElseThrow();
         } catch (DataIntegrityViolationException e){
-            throw new BuscarException("Erro ao cadastrar Campeonato: Dados Inválidos");
+            throw new BuscarException("Erro ao buscar Campeonato: Dados Inválidos");
         } catch (Exception e) {
-            throw new BuscarException("Erro inesperado ao cadastrar Campeonato");
+            throw new BuscarException("Erro inesperado ao buscar Campeonato");
         }
     }
 }

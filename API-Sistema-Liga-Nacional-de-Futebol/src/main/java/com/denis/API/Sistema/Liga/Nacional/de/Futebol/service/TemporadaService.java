@@ -1,8 +1,11 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.calculos.CalculoPartidasTemporada;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TemporadaRequest;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TemporadaResponse;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Campeonato;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TemporadaRepository;
@@ -25,7 +28,7 @@ public class TemporadaService {
         this.campeonatoService = campeonatoService;
     }
 
-    public Temporada cadastrarTemporada (TemporadaRequest dto){
+    public TemporadaResponse cadastrarTemporada (TemporadaRequest dto){
         try {
             Temporada temporada = new Temporada();
             temporada.setNome(dto.nome());
@@ -38,14 +41,13 @@ public class TemporadaService {
             } else if (temporada.getCampeonato().getTimes().size() != 20){
                 throw new CadastroException("Erro ao Cadastrar Temporada: Quantidade de Times Inválida");
             } else {
-
                 Temporada salvo = temporadaRepository.save(temporada);
 
                 CalculoPartidasTemporada calculoPartidasTemporada = new CalculoPartidasTemporada(partidaService);
                 calculoPartidasTemporada.partidas(salvo);
                 cadastrarEstatisticasTemporada(salvo);
 
-                return salvo;
+                return new TemporadaResponse(salvo.getId(), salvo.isConcluido(), salvo.getNome(), salvo.getDataInicio(), salvo.getDataFim(), salvo.getCampeonato().getNome());
             }
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Temporada: Dados Inválidos");
@@ -57,6 +59,16 @@ public class TemporadaService {
     public void cadastrarEstatisticasTemporada(Temporada temporada){
         for (Time time : temporada.getCampeonato().getTimes()){
             estatisticaTemporadaTimeService.cadastrarEstatisticasTemporadaTime(time, temporada);
+        }
+    }
+
+    public Temporada buscarTemporadaPorId(Long id){
+        try {
+            return temporadaRepository.findById(id).orElseThrow();
+        } catch (DataIntegrityViolationException e){
+            throw new BuscarException("Erro ao buscar Temporada: Dados Inválidos");
+        } catch (Exception e) {
+            throw new BuscarException("Erro inesperado ao buscar Temporada");
         }
     }
 }

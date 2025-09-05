@@ -2,7 +2,6 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.controller;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EmpresaRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EmpresaResponse;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Empresa;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.EmpresaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +20,9 @@ public class EmpresaController {
         this.empresaService = empresaService;
     }
 
-    @PostMapping
+    @PostMapping("/cadastrar-empresa")
     public ResponseEntity<EmpresaResponse> cadastrarEmpresa(@RequestBody EmpresaRequest dto) {
-        Empresa empresa = empresaService.cadastrarEmpresa(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new EmpresaResponse(empresa.getId(), empresa.getNomeEmpresarial(), empresa.getNomeFantasia(), empresa.getCnpj(), empresa.getTelefone()));
+        EmpresaResponse empresa = empresaService.cadastrarEmpresa(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(empresa);
     }
 }
