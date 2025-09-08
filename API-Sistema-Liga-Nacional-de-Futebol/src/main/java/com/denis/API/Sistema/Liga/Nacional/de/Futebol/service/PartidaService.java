@@ -7,6 +7,7 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.PartidaResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Partida;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.PartidaRepository;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TemporadaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,11 @@ import java.util.List;
 @Service
 public class PartidaService {
 
-    private final TemporadaService temporadaService;
+    private TemporadaRepository temporadaRepository;
     private PartidaRepository partidaRepository;
 
-    public PartidaService(PartidaRepository partidaRepository, TemporadaService temporadaService) {this.partidaRepository = partidaRepository;
-        this.temporadaService = temporadaService;
+    public PartidaService(PartidaRepository partidaRepository, TemporadaRepository temporadaRepository) {this.partidaRepository = partidaRepository;
+        this.temporadaRepository = temporadaRepository;
     }
 
     public PartidaResponse cadastrarPartida (PartidaRequest dto){
@@ -41,12 +42,12 @@ public class PartidaService {
 
     public List<PartidaResponse> listarPartidaPorRodadaECampeonato(Long idTemporada, int rodada){
         try {
-            Temporada temporada = temporadaService.buscarTemporadaPorId(idTemporada);
+            Temporada temporada = temporadaRepository.findById(idTemporada).orElseThrow();
 
             List<Partida> partidas = partidaRepository.findAllByTemporadaAndRodada(temporada, rodada);
             List<PartidaResponse> partidasResponse = new ArrayList<>();
             for (Partida partida : partidas) {
-                partidasResponse.add(new PartidaResponse(partida.getId(), partida.getRodada(), partida.getDataHora(), partida.getTimeMandante().getNome(), partida.getTimeVisitante().getNome(), partida.getTemporada().getNome()))
+                partidasResponse.add(new PartidaResponse(partida.getId(), partida.getRodada(), partida.getDataHora(), partida.getTimeMandante().getNome(), partida.getTimeVisitante().getNome(), partida.getTemporada().getNome()));
             }
             return partidasResponse;
         } catch (DataIntegrityViolationException e){

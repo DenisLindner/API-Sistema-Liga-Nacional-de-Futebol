@@ -32,4 +32,10 @@ public class TimeController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @DeleteMapping("/deletar-time")
+    public ResponseEntity<Void> deletarTimePorId(@RequestParam Long id){
+        timeService.deletarTimePorId(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

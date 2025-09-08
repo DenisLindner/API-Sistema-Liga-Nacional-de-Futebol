@@ -46,6 +46,16 @@ public class TimeService {
         }
     }
 
+    public void deletarTimePorId (Long id){
+        try {
+            timeRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e){
+            throw new BuscarException("Erro ao deletar Time: Dados Inválidos");
+        } catch (Exception e) {
+            throw new BuscarException("Erro inesperado ao deletar Time");
+        }
+    }
+
     public Time buscarTimePorId(Long id){
         try {
             return timeRepository.findById(id).orElseThrow();

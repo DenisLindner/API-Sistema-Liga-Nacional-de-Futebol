@@ -2,27 +2,22 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.calculos;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CalculoPartidasException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.PartidaRequest;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Partida;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.PartidaService;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Component
 public class CalculoPartidasTemporada {
 
-    private PartidaService partidaService;
+    public  CalculoPartidasTemporada() {}
 
-    public  CalculoPartidasTemporada(PartidaService partidaService) {
-        this.partidaService = partidaService;
-    }
-
-    public void partidas(Temporada temporada) {
+    public List<PartidaRequest> partidas(Temporada temporada) {
         List<Time> times = temporada.getCampeonato().getTimes();
         if (times.size() != 20){
             throw new CalculoPartidasException("Erro ao Calcular Partidas da Temporada: Quantidade de Times Inválida");
@@ -35,7 +30,7 @@ public class CalculoPartidasTemporada {
             i++;
         }
 
-        List<Partida> partidas = new ArrayList<>();
+        List<PartidaRequest> partidas = new ArrayList<>();
 
         boolean mando = true;
         int rodada = 1;
@@ -59,12 +54,13 @@ public class CalculoPartidasTemporada {
                             partidaRequest = new PartidaRequest(rodada, dataHora,numTimes.get(posicoes[18-c]), numTimes.get(posicoes[c]), temporada);
                         }
                     }
-                    partidaService.cadastrarPartida(partidaRequest);
+                    partidas.add(partidaRequest);
                 }
                 rodada++;
                 mando = !mando;
             }
         }
+        return partidas;
     }
 
     public static int[] timesPosicao(int rodada){
