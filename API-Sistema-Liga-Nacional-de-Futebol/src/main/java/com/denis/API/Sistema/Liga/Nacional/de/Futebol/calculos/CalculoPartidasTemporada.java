@@ -38,7 +38,7 @@ public class CalculoPartidasTemporada {
         for (int a = 1; a <= 2; a++){
             for (int b = 0; b <= 18; b++){
                 int[] posicoes = timesPosicao(b);
-                LocalDateTime dataHora = dataInicio.plusDays(rodada* 7L);
+                LocalDateTime dataHora = dataInicio.plusDays((rodada-1)* 7L);
                 for (int c = 0; c < 10; c++){
                     PartidaRequest partidaRequest;
                     if (mando){

@@ -41,14 +41,17 @@ public class TemporadaService {
             Temporada temporada = new Temporada();
             temporada.setNome(dto.nome());
             temporada.setDataInicio(dto.dataInicio());
-            temporada.setDataFim(dto.dataFim());
             temporada.setCampeonato(campeonatoService.buscarCampeonatoPorId(dto.idCampeonato()));
 
-            if(temporada.getCampeonato().getTimes().isEmpty()){
+
+            int quantidadeTimes = temporada.getCampeonato().getTimes().size();
+
+            if(quantidadeTimes == 0){
                 throw new CadastroException("Erro ao Cadastrar Temporada: Nenhum de Time Cadastrado");
-            } else if (temporada.getCampeonato().getTimes().size() != 20){
+            } else if (quantidadeTimes != 20){
                 throw new CadastroException("Erro ao Cadastrar Temporada: Quantidade de Times Inválida");
             } else {
+                temporada.setDataFim(dto.dataInicio().plusDays(((quantidadeTimes-1)*2)*7L));
                 Temporada salvo = temporadaRepository.save(temporada);
 
                 List<PartidaRequest> partidas = calculoPartidasTemporada.partidas(salvo);
