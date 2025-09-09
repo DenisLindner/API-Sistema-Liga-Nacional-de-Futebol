@@ -19,10 +19,10 @@ public class CalculoTabelaTemporada {
         List<EstatisticaTemporadaTime> estatisticaTemporadaTimes = temporada.getEstatisticaTemporadaTimes();
 
         estatisticaTemporadaTimes.sort((t1, t2) -> {
-            int comp = Integer.compare(t1.getPontos(), t2.getPontos());
+            int comp = Integer.compare(t2.getPontos(), t1.getPontos());
             if (comp != 0) return comp;
 
-            comp = Integer.compare(t1.getGolsPro()- t1.getGolsContra(), t2.getGolsPro()-t2.getGolsContra());
+            comp = Integer.compare(t2.getGolsPro()- t2.getGolsContra(), t1.getGolsPro()-t1.getGolsContra());
             if (comp != 0) return comp;
 
             return t1.getTime().getNome().compareTo(t2.getTime().getNome());

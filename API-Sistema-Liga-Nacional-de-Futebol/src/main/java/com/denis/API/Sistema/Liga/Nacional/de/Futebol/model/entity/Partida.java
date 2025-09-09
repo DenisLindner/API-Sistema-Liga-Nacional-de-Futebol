@@ -48,6 +48,15 @@ public class Partida {
     @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Credenciamento> credenciamentos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Gol> gols = new ArrayList<>();
+
+    @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Amarelo> amarelos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Vermelho> vermelhos = new ArrayList<>();
+
     public Partida() {}
 
     public Partida(int rodada, LocalDateTime dataHora, Time timeMandante, Time timeVisitante, Temporada temporada) {

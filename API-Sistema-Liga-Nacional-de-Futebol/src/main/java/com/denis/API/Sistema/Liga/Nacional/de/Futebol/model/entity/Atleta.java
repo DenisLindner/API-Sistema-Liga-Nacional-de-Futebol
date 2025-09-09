@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 @Entity
@@ -46,6 +48,15 @@ public class Atleta {
     @ManyToOne
     @JoinColumn(name = "id_time", nullable = false)
     private Time time;
+
+    @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Gol> gols = new ArrayList<>();
+
+    @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Amarelo> amarelos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Vermelho> vermelhos = new ArrayList<>();
 
     public Atleta() {}
 
