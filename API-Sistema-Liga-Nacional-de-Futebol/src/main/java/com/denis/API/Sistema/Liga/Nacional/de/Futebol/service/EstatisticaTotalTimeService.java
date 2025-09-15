@@ -3,7 +3,6 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.VerificarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.EstatisticaTotalTime;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.EstatisticaTotalTimeRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,29 +27,31 @@ public class EstatisticaTotalTimeService {
         }
     }
 
-    public void aumentarQuantidadeAmarelos(Time time) throws Exception {
+    public void aumentarQuantidadeAmarelos(int qtd, Time time) throws Exception {
         EstatisticaTotalTime estatisticaTotalTime = estatisticaTotalTimeRepository.findByTime(time);
-        estatisticaTotalTime.setCartoesAmarelos(estatisticaTotalTime.getCartoesAmarelos() + 1);
+        estatisticaTotalTime.setCartoesAmarelos(estatisticaTotalTime.getCartoesAmarelos() + qtd);
         estatisticaTotalTimeRepository.save(estatisticaTotalTime);
     }
 
-    public void aumentarQuantidadeVermelhos(Time time, Temporada temporada) throws Exception {
+    public void aumentarQuantidadeVermelhos(int qtd, Time time) throws Exception {
         EstatisticaTotalTime estatisticaTotalTime = estatisticaTotalTimeRepository.findByTime(time);
-        estatisticaTotalTime.setCartoesAmarelos(estatisticaTotalTime.getCartoesAmarelos() + 1);
+        estatisticaTotalTime.setCartoesAmarelos(estatisticaTotalTime.getCartoesAmarelos() + qtd);
         estatisticaTotalTimeRepository.save(estatisticaTotalTime);
     }
 
-    public void aumentarQuantidadeGols(int qtdGolsPro, int qtdGolsContra,Time time, Temporada temporada) throws Exception {
-        if(qtdGolsPro < 0 || qtdGolsContra < 0){
-            throw new VerificarException("Erro ao aumentar quantidade de gols: quantidade inválida");
-        }
+    public void aumentarQuantidadeGolsPro(Time time) throws Exception {
         EstatisticaTotalTime estatisticaTotalTime = estatisticaTotalTimeRepository.findByTime(time);
-        estatisticaTotalTime.setGolsPro(estatisticaTotalTime.getGolsPro() + qtdGolsPro);
-        estatisticaTotalTime.setGolsContra(estatisticaTotalTime.getGolsContra() + qtdGolsContra);
+        estatisticaTotalTime.setGolsPro(estatisticaTotalTime.getGolsPro() + 1);
         estatisticaTotalTimeRepository.save(estatisticaTotalTime);
     }
 
-    public void aumentarQuantidadePontos(int pontos, Time time, Temporada temporada) throws Exception {
+    public void aumentarQuantidadeGolsContra(Time time) throws Exception {
+        EstatisticaTotalTime estatisticaTotalTime = estatisticaTotalTimeRepository.findByTime(time);
+        estatisticaTotalTime.setGolsContra(estatisticaTotalTime.getGolsContra() + 1);
+        estatisticaTotalTimeRepository.save(estatisticaTotalTime);
+    }
+
+    public void aumentarQuantidadePontos(int pontos, Time time) throws Exception {
         if(pontos < 0 || pontos > 3){
             throw new VerificarException("Erro ao aumentar quantidade de pontos: quantidade inválida");
         }
@@ -59,7 +60,7 @@ public class EstatisticaTotalTimeService {
         estatisticaTotalTimeRepository.save(estatisticaTotalTime);
     }
 
-    public void aumentarQuantidadePartidas(Time time, Temporada temporada) throws Exception {
+    public void aumentarQuantidadePartidas(Time time) throws Exception {
         EstatisticaTotalTime estatisticaTotalTime = estatisticaTotalTimeRepository.findByTime(time);
         estatisticaTotalTime.setQuantidadePartidas(estatisticaTotalTime.getQuantidadePartidas() + 1);
         estatisticaTotalTimeRepository.save(estatisticaTotalTime);

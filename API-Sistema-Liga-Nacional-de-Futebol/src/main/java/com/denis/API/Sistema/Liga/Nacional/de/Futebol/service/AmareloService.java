@@ -22,7 +22,7 @@ public class AmareloService {
         this.partidaRepository = partidaRepository;
     }
 
-    public void cadastrarAmarelo(AmareloRequest dto) {
+    public Amarelo cadastrarAmarelo(AmareloRequest dto) {
         try {
             Amarelo amarelo = new Amarelo();
             amarelo.setMinuto(dto.minuto());
@@ -30,11 +30,11 @@ public class AmareloService {
             amarelo.setTime(amarelo.getAtleta().getTime());
             amarelo.setPartida(partidaRepository.findById(dto.idPartida()).orElseThrow());
 
-            amareloRepository.save(amarelo);
+            return amareloRepository.save(amarelo);
         } catch (DataIntegrityViolationException e){
-            throw new CadastroException("Erro ao cadastrar Gol: Dados Inválidos");
+            throw new CadastroException("Erro ao cadastrar cartão Amarelo: Dados Inválidos");
         } catch (Exception e) {
-            throw new CadastroException("Erro inesperado ao cadastrar Gol");
+            throw new CadastroException("Erro inesperado ao cadastrar cartão Amarelo");
         }
     }
 }

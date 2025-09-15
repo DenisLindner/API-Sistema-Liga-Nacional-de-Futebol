@@ -11,8 +11,12 @@ import org.springframework.stereotype.Service;
 public class EstatisticaTemporadaTimeService {
 
     private EstatisticaTemporadaTimeRepository estatisticaTemporadaTimeRepository;
+    private EstatisticaTotalTimeService estatisticaTotalTimeService;
 
-    public EstatisticaTemporadaTimeService (EstatisticaTemporadaTimeRepository estatisticaTemporadaTimeRepository) {this.estatisticaTemporadaTimeRepository = estatisticaTemporadaTimeRepository;}
+    public EstatisticaTemporadaTimeService (EstatisticaTemporadaTimeRepository estatisticaTemporadaTimeRepository, EstatisticaTotalTimeService estatisticaTotalTimeService) {
+        this.estatisticaTemporadaTimeRepository = estatisticaTemporadaTimeRepository;
+        this.estatisticaTotalTimeService = estatisticaTotalTimeService;
+    }
 
     public void cadastrarEstatisticasTemporadaTime(Time time, Temporada temporada){
         try {
@@ -26,26 +30,32 @@ public class EstatisticaTemporadaTimeService {
         }
     }
 
-    public void aumentarQuantidadeAmarelos(Time time, Temporada temporada) throws Exception {
+    public void aumentarQuantidadeAmarelos(int qtd, Time time, Temporada temporada) throws Exception {
         EstatisticaTemporadaTime estatisticaTemporadaTime = estatisticaTemporadaTimeRepository.findByTimeAndTemporada(time, temporada);
         estatisticaTemporadaTime.setCartoesAmarelos(estatisticaTemporadaTime.getCartoesAmarelos() + 1);
         estatisticaTemporadaTimeRepository.save(estatisticaTemporadaTime);
+        estatisticaTotalTimeService.aumentarQuantidadeAmarelos(qtd, time);
     }
 
-    public void aumentarQuantidadeVermelhos(Time time, Temporada temporada) throws Exception {
+    public void aumentarQuantidadeVermelhos(int qtd, Time time, Temporada temporada) throws Exception {
         EstatisticaTemporadaTime estatisticaTemporadaTime = estatisticaTemporadaTimeRepository.findByTimeAndTemporada(time, temporada);
-        estatisticaTemporadaTime.setCartoesAmarelos(estatisticaTemporadaTime.getCartoesAmarelos() + 1);
+        estatisticaTemporadaTime.setCartoesVermelhos(estatisticaTemporadaTime.getCartoesVermelhos() + qtd);
         estatisticaTemporadaTimeRepository.save(estatisticaTemporadaTime);
+        estatisticaTotalTimeService.aumentarQuantidadeVermelhos(qtd, time);
     }
 
-    public void aumentarQuantidadeGols(int qtdGolsPro, int qtdGolsContra,Time time, Temporada temporada) throws Exception {
-        if(qtdGolsPro < 0 || qtdGolsContra < 0){
-            throw new VerificarException("Erro ao aumentar quantidade de gols: quantidade inválida");
-        }
+    public void aumentarQuantidadeGolsPro(Time time, Temporada temporada) throws Exception {
         EstatisticaTemporadaTime estatisticaTemporadaTime = estatisticaTemporadaTimeRepository.findByTimeAndTemporada(time, temporada);
-        estatisticaTemporadaTime.setGolsPro(estatisticaTemporadaTime.getGolsPro() + qtdGolsPro);
-        estatisticaTemporadaTime.setGolsContra(estatisticaTemporadaTime.getGolsContra() + qtdGolsContra);
+        estatisticaTemporadaTime.setGolsPro(estatisticaTemporadaTime.getGolsPro() + 1);
         estatisticaTemporadaTimeRepository.save(estatisticaTemporadaTime);
+        estatisticaTotalTimeService.aumentarQuantidadeGolsPro(time);
+    }
+
+    public void aumentarQuantidadeGolsContra(Time time, Temporada temporada) throws Exception {
+        EstatisticaTemporadaTime estatisticaTemporadaTime = estatisticaTemporadaTimeRepository.findByTimeAndTemporada(time, temporada);
+        estatisticaTemporadaTime.setGolsContra(estatisticaTemporadaTime.getGolsContra() + 1);
+        estatisticaTemporadaTimeRepository.save(estatisticaTemporadaTime);
+        estatisticaTotalTimeService.aumentarQuantidadeGolsContra(time);
     }
 
     public void aumentarQuantidadePontos(int pontos, Time time, Temporada temporada) throws Exception {
@@ -55,11 +65,13 @@ public class EstatisticaTemporadaTimeService {
         EstatisticaTemporadaTime estatisticaTemporadaTime = estatisticaTemporadaTimeRepository.findByTimeAndTemporada(time, temporada);
         estatisticaTemporadaTime.setPontos(estatisticaTemporadaTime.getPontos() + pontos);
         estatisticaTemporadaTimeRepository.save(estatisticaTemporadaTime);
+        estatisticaTotalTimeService.aumentarQuantidadePontos(pontos, time);
     }
 
     public void aumentarQuantidadePartidas(Time time, Temporada temporada) throws Exception {
         EstatisticaTemporadaTime estatisticaTemporadaTime = estatisticaTemporadaTimeRepository.findByTimeAndTemporada(time, temporada);
         estatisticaTemporadaTime.setQuantidadePartidas(estatisticaTemporadaTime.getQuantidadePartidas() + 1);
         estatisticaTemporadaTimeRepository.save(estatisticaTemporadaTime);
+        estatisticaTotalTimeService.aumentarQuantidadePartidas(time);
     }
 }

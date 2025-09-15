@@ -2,7 +2,6 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.VerificarException;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EstatisticasCampeonatoResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.*;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.EstatisticasCampeonatoRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,19 +26,25 @@ public class EstatisticasCampeonatoService {
         }
     }
 
-    public void aumentarQuantidadeAmarelos(Campeonato campeonato) throws Exception {
+    public void aumentarQuantidadeAmarelos(int qtdCartoes, Campeonato campeonato) throws Exception {
+        if (qtdCartoes < 0) {
+            throw new CadastroException("Erro ao aumentar quantidade de amarelos: quantidade inválida");
+        }
         EstatisticasCampeonato estatisticasCampeonato = estatisticasCampeonatoRepository.findByCampeonato(campeonato);
-        estatisticasCampeonato.setCartoesAmarelos(estatisticasCampeonato.getCartoesAmarelos() + 1);
+        estatisticasCampeonato.setCartoesAmarelos(estatisticasCampeonato.getCartoesAmarelos() + qtdCartoes);
         estatisticasCampeonatoRepository.save(estatisticasCampeonato);
     }
 
-    public void aumentarQuantidadeVermelhos(Campeonato campeonato) throws Exception {
+    public void aumentarQuantidadeVermelhos(int qtdCartoes,Campeonato campeonato) throws Exception {
+        if (qtdCartoes < 0) {
+            throw new CadastroException("Erro ao aumentar quantidade de amarelos: quantidade inválida");
+        }
         EstatisticasCampeonato estatisticasCampeonato = estatisticasCampeonatoRepository.findByCampeonato(campeonato);
-        estatisticasCampeonato.setCartoesAmarelos(estatisticasCampeonato.getCartoesAmarelos() + 1);
+        estatisticasCampeonato.setCartoesAmarelos(estatisticasCampeonato.getCartoesAmarelos() + qtdCartoes);
         estatisticasCampeonatoRepository.save(estatisticasCampeonato);
     }
 
-    public void aumentarQuantidadeGols(Campeonato campeonato, int qtdGols) throws Exception {
+    public void aumentarQuantidadeGols(int qtdGols, Campeonato campeonato) throws Exception {
         if(qtdGols < 0 || qtdGols > 3){
             throw new VerificarException("Erro ao aumentar quantidade de gols: quantidade inválida");
         }
@@ -48,7 +53,7 @@ public class EstatisticasCampeonatoService {
         estatisticasCampeonatoRepository.save(estatisticasCampeonato);
     }
 
-    public void aumentarQuantidadePontos(Campeonato campeonato, int pontos) throws Exception {
+    public void aumentarQuantidadePontos(int pontos, Campeonato campeonato) throws Exception {
         if(pontos < 0 || pontos > 3){
             throw new VerificarException("Erro ao aumentar quantidade de pontos: quantidade inválida");
         }

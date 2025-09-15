@@ -5,6 +5,7 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroExceptio
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.PartidaRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.PartidaResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Partida;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Sumula;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.PartidaRepository;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TemporadaRepository;
@@ -47,7 +48,7 @@ public class PartidaService {
             List<Partida> partidas = partidaRepository.findAllByTemporadaAndRodada(temporada, rodada);
             List<PartidaResponse> partidasResponse = new ArrayList<>();
             for (Partida partida : partidas) {
-                partidasResponse.add(new PartidaResponse(partida.getId(), partida.getRodada(), partida.getDataHora(), partida.getTimeMandante().getNome(), partida.getTimeVisitante().getNome(), partida.getTemporada().getNome()));
+                partidasResponse.add(new PartidaResponse(partida.getId(), partida.getRodada(), partida.getDataHora(), partida.getTimeMandante().getNome(), partida.getTimeVisitante().getNome(), partida.getTemporada().getNome(), String.valueOf(partida.isConcluido())));
             }
             return partidasResponse;
         } catch (DataIntegrityViolationException e){
@@ -64,6 +65,20 @@ public class PartidaService {
             throw new BuscarException("Erro ao buscar Partida: Dados Inválidos");
         } catch (Exception e) {
             throw new BuscarException("Erro inesperado ao buscar Partida");
+        }
+    }
+
+    public Partida atualizarPartida(Sumula sumula){
+        try {
+            Partida partida = sumula.getPartida();
+            partida.setConcluido(true);
+            partida.setGolsMandante(sumula.getGolsMandante());
+            partida.setGolsVisitante(sumula.getGolsVisitante());
+            return partidaRepository.save(partida);
+        } catch (DataIntegrityViolationException e){
+            throw new CadastroException("Erro ao atualizar Partida: Dados Inválidos");
+        } catch (Exception e) {
+            throw new CadastroException("Erro inesperado ao atualizar Partida");
         }
     }
 }

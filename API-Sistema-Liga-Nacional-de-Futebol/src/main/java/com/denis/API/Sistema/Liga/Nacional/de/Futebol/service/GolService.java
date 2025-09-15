@@ -2,7 +2,6 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.GolRequest;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.GolResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Gol;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.AtletaRepository;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.GolRepository;
@@ -26,7 +25,7 @@ public class GolService {
         this.timeRepository = timeRepository;
     }
 
-    public void cadastrarGol(GolRequest dto) {
+    public Gol cadastrarGol(GolRequest dto) {
         try {
             Gol gol = new Gol();
             gol.setMinuto(dto.minuto());
@@ -34,7 +33,7 @@ public class GolService {
             gol.setPartida(partidaRepository.findById(dto.idPartida()).orElseThrow());
             gol.setTime(timeRepository.findById(dto.idTime()).orElseThrow());
 
-            golRepository.save(gol);
+            return golRepository.save(gol);
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Gol: Dados Inválidos");
         } catch (Exception e) {
