@@ -32,7 +32,7 @@ public class PartidaService {
 
             Partida salvo = partidaRepository.save(partida);
 
-            return new PartidaResponse(salvo.getId(), salvo.getRodada(), salvo.getDataHora(), salvo.getTimeMandante().getNome(), salvo.getTimeVisitante().getNome(), salvo.getTemporada().getNome());
+            return new PartidaResponse(salvo.getId(), salvo.getRodada(), salvo.getDataHora(), salvo.getTimeMandante().getNome(), salvo.getTimeVisitante().getNome(), salvo.getTemporada().getNome(), String.valueOf(salvo.isConcluido()));
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Partida: Dados Inválidos");
         } catch (Exception e) {
@@ -54,6 +54,16 @@ public class PartidaService {
             throw new BuscarException("Erro ao buscar Partidas: Dados Inválidos");
         } catch (Exception e) {
             throw new BuscarException("Erro inesperado ao buscar Partidas");
+        }
+    }
+
+    public Partida buscarPartidaPorId(Long id){
+        try {
+            return partidaRepository.findById(id).orElseThrow();
+        } catch (DataIntegrityViolationException e){
+            throw new BuscarException("Erro ao buscar Partida: Dados Inválidos");
+        } catch (Exception e) {
+            throw new BuscarException("Erro inesperado ao buscar Partida");
         }
     }
 }

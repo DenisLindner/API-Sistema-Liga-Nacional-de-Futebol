@@ -16,7 +16,7 @@ public class Vermelho extends Cartao{
 
     public Vermelho() {}
 
-    public Vermelho(int minuto, Atleta atleta, Partida partida) {
-        super(minuto, atleta, partida);
+    public Vermelho(int minuto, Atleta atleta, Time time, Partida partida) {
+        super(minuto, atleta, time, partida);
     }
 }

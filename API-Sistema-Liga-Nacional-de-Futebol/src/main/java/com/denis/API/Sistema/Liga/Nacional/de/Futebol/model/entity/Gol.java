@@ -22,7 +22,11 @@ public class Gol {
     private Atleta atleta;
 
     @ManyToOne
-    @JoinColumn(name = "id_partida")
+    @JoinColumn(name = "id_time", nullable = false)
+    private Time time;
+
+    @ManyToOne
+    @JoinColumn(name = "id_partida", nullable = false)
     private Partida partida;
 
     public Gol() {}
