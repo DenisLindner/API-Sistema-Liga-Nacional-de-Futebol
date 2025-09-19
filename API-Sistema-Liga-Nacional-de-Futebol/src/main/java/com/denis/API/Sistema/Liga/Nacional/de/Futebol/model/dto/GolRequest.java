@@ -1,4 +1,4 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto;
 
-public record GolRequest(int minuto, Long idAtleta, Long idTime, Long idPartida) {
+public record GolRequest(int minuto, Long idAtleta) {
 }

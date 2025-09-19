@@ -2,6 +2,7 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.VermelhoRequest;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Partida;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Vermelho;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.AtletaRepository;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.PartidaRepository;
@@ -14,21 +15,19 @@ public class VermelhoService {
 
     private VermelhoRepository vermelhoRepository;
     private AtletaRepository atletaRepository;
-    private PartidaRepository partidaRepository;
 
-    public VermelhoService(VermelhoRepository vermelhoRepository, AtletaRepository atletaRepository, PartidaRepository partidaRepository) {
+    public VermelhoService(VermelhoRepository vermelhoRepository, AtletaRepository atletaRepository) {
         this.vermelhoRepository = vermelhoRepository;
         this.atletaRepository = atletaRepository;
-        this.partidaRepository = partidaRepository;
     }
 
-    public Vermelho cadastrarVermelho(VermelhoRequest dto) {
+    public Vermelho cadastrarVermelho(VermelhoRequest dto, Partida partida) {
         try {
             Vermelho vermelho = new Vermelho();
             vermelho.setMinuto(dto.minuto());
             vermelho.setAtleta(atletaRepository.findById(dto.idAtleta()).orElseThrow());
             vermelho.setTime(vermelho.getAtleta().getTime());
-            vermelho.setPartida(partidaRepository.findById(dto.idPartida()).orElseThrow());
+            vermelho.setPartida(partida);
 
             return vermelhoRepository.save(vermelho);
         } catch (DataIntegrityViolationException e){

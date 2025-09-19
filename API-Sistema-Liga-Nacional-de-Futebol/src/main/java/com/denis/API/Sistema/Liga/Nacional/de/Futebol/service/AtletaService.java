@@ -5,6 +5,7 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroExceptio
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.AtletaRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.AtletaResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Atleta;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Gol;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.AtletaRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,33 @@ public class AtletaService {
             throw new BuscarException("Erro ao buscar Atleta: Dados Inválidos");
         } catch (Exception e) {
             throw new BuscarException("Erro inesperado ao buscar Atleta");
+        }
+    }
+
+    public void atualizarGols(Atleta atleta){
+        try {
+            atleta.setQuantidadeGols(atleta.getQuantidadeGols() + 1);
+            atletaRepository.save(atleta);
+        } catch (Exception e){
+            throw new BuscarException("Erro ao atualizar Gols");
+        }
+    }
+
+    public void atualizarAmarelos(Atleta atleta){
+        try {
+            atleta.setCartoesAmarelos(atleta.getCartoesAmarelos() + 1);
+            atletaRepository.save(atleta);
+        } catch (Exception e){
+            throw new BuscarException("Erro ao atualizar Amarelos");
+        }
+    }
+
+    public void atualizarVermelhos(Atleta atleta){
+        try {
+            atleta.setCartoesVermelhos(atleta.getCartoesVermelhos() + 1);
+            atletaRepository.save(atleta);
+        } catch (Exception e){
+            throw new BuscarException("Erro ao atualizar Vermelhos");
         }
     }
 }

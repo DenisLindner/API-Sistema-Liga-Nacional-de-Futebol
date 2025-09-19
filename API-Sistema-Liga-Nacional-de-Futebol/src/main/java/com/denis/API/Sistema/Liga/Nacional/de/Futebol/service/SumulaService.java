@@ -23,8 +23,9 @@ public class SumulaService {
     private GolService golService;
     private EstatisticasCampeonatoService estatisticasCampeonatoService;
     private EstatisticaTemporadaTimeService estatisticaTemporadaTimeService;
+    private EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService;
 
-    public SumulaService(PartidaService partidaService, AtletaService atletaService,  TimeService timeService, AmareloService amareloService, VermelhoService vermelhoService, GolService golService, EstatisticasCampeonatoService estatisticasCampeonatoService, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService) {
+    public SumulaService(PartidaService partidaService, AtletaService atletaService,  TimeService timeService, AmareloService amareloService, VermelhoService vermelhoService, GolService golService, EstatisticasCampeonatoService estatisticasCampeonatoService, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService,  EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService) {
         this.partidaService = partidaService;
         this.atletaService = atletaService;
         this.timeService = timeService;
@@ -33,6 +34,7 @@ public class SumulaService {
         this.golService = golService;
         this.estatisticasCampeonatoService = estatisticasCampeonatoService;
         this.estatisticaTemporadaTimeService = estatisticaTemporadaTimeService;
+        this.estatisticaTemporadaAtletaService = estatisticaTemporadaAtletaService;
     }
 
     public void cadastrarSumula(SumulaRequest dto){
@@ -66,7 +68,7 @@ public class SumulaService {
                 throw new VerificarException("Erro ao verificar Sumula: Erro na lista de gols");
             }
 
-            atualizarEstatisticas(sumula);
+            atualizarEstatisticas(sumula, partida);
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao verificar Sumula: Dados Inválidos");
         } catch (Exception e) {
@@ -112,8 +114,8 @@ public class SumulaService {
             int quantidadeGolsVisitante = 0;
             int quantidadeGolsMandante = 0;
             for (GolRequest gol : gols) {
+                Atleta atleta = atletaService.buscarAtletaPorId(gol.idAtleta());
                 if (!(gol.idAtleta() == 0)){
-                    Atleta atleta = atletaService.buscarAtletaPorId(gol.idAtleta());
                     if (!(atleta.getTime() == sumula.getPartida().getTimeMandante() || atleta.getTime() == sumula.getPartida().getTimeVisitante())){
                         throw new VerificarException("Erro ao verificar gol: time do Atleta não condizente com nenhum time da Partida");
                     }
@@ -123,7 +125,7 @@ public class SumulaService {
                     throw new VerificarException("Erro ao verificar gol: minuto inválido");
                 }
 
-                Time time = timeService.buscarTimePorId(gol.idTime());
+                Time time = atleta.getTime();
                 if (time.equals(sumula.getPartida().getTimeVisitante())){
                     quantidadeGolsVisitante++;
                 } else if (time.equals(sumula.getPartida().getTimeMandante())){
@@ -143,16 +145,18 @@ public class SumulaService {
         return true;
     }
 
-    public void atualizarEstatisticas(Sumula sumula) throws Exception {
+    public void atualizarEstatisticas(Sumula sumula, Partida partida) throws Exception {
         int qtdAmareloMandante = 0;
         int qtdAmareloVisitante = 0;
         for (AmareloRequest dto : sumula.getAmarelos()) {
-            Amarelo amarelo = amareloService.cadastrarAmarelo(dto);
+            Amarelo amarelo = amareloService.cadastrarAmarelo(dto, partida);
             if (amarelo.getAtleta().getTime().equals(sumula.getPartida().getTimeMandante())) {
                 qtdAmareloMandante++;
             } else {
                 qtdAmareloVisitante++;
             }
+            EstatisticaTemporadaAtleta estatisticaAtleta = estatisticaTemporadaAtletaService.buscarPorAtletaETemporada(amarelo.getAtleta(), amarelo.getPartida().getTemporada());
+            estatisticaTemporadaAtletaService.atualizarAmarelosAtleta(estatisticaAtleta);
         }
         estatisticaTemporadaTimeService.aumentarQuantidadeAmarelos(qtdAmareloMandante, sumula.getPartida().getTimeMandante(), sumula.getPartida().getTemporada());
         estatisticaTemporadaTimeService.aumentarQuantidadeAmarelos(qtdAmareloVisitante, sumula.getPartida().getTimeVisitante(), sumula.getPartida().getTemporada());
@@ -160,17 +164,19 @@ public class SumulaService {
         int qtdVermelhoMandante = 0;
         int qtdVermelhoVisitante = 0;
         for (VermelhoRequest dto : sumula.getVermelhos()) {
-            Vermelho vermelho = vermelhoService.cadastrarVermelho(dto);
+            Vermelho vermelho = vermelhoService.cadastrarVermelho(dto, partida);
             if (vermelho.getAtleta().getTime().equals(sumula.getPartida().getTimeMandante())) {
                 qtdVermelhoMandante++;
             } else {
                 qtdVermelhoVisitante++;
             }
+            EstatisticaTemporadaAtleta estatisticaAtleta = estatisticaTemporadaAtletaService.buscarPorAtletaETemporada(vermelho.getAtleta(), vermelho.getPartida().getTemporada());
+            estatisticaTemporadaAtletaService.atualizarVermelhosAtleta(estatisticaAtleta);
         }
         estatisticaTemporadaTimeService.aumentarQuantidadeVermelhos(qtdVermelhoMandante, sumula.getPartida().getTimeMandante(), sumula.getPartida().getTemporada());
         estatisticaTemporadaTimeService.aumentarQuantidadeVermelhos(qtdVermelhoVisitante, sumula.getPartida().getTimeVisitante(), sumula.getPartida().getTemporada());
         for (GolRequest dto : sumula.getGols()) {
-            Gol gol = golService.cadastrarGol(dto);
+            Gol gol = golService.cadastrarGol(dto, partida);
             if (gol.getTime() == sumula.getPartida().getTimeMandante()){
                 estatisticaTemporadaTimeService.aumentarQuantidadeGolsPro(gol.getTime(), gol.getPartida().getTemporada());
                 estatisticaTemporadaTimeService.aumentarQuantidadeGolsContra(sumula.getPartida().getTimeVisitante(), gol.getPartida().getTemporada());
@@ -178,6 +184,8 @@ public class SumulaService {
                 estatisticaTemporadaTimeService.aumentarQuantidadeGolsPro(gol.getTime(), gol.getPartida().getTemporada());
                 estatisticaTemporadaTimeService.aumentarQuantidadeGolsContra(sumula.getPartida().getTimeMandante(), gol.getPartida().getTemporada());
             }
+            EstatisticaTemporadaAtleta estatisticaAtleta = estatisticaTemporadaAtletaService.buscarPorAtletaETemporada(gol.getAtleta(), gol.getPartida().getTemporada());
+            estatisticaTemporadaAtletaService.atualizarGolsAtleta(estatisticaAtleta);
         }
 
         Campeonato campeonato = sumula.getPartida().getTemporada().getCampeonato();
@@ -185,22 +193,22 @@ public class SumulaService {
         estatisticasCampeonatoService.aumentarQuantidadeVermelhos(sumula.getVermelhos().size(), campeonato);
         estatisticasCampeonatoService.aumentarQuantidadeGols(sumula.getGols().size(), campeonato);
         estatisticasCampeonatoService.aumentarQuantidadePartidas(campeonato);
-        Partida partida = partidaService.atualizarPartida(sumula);
+        Partida partidaAtualizada = partidaService.atualizarPartida(sumula);
 
-        if (partida.getGolsMandante() == sumula.getGolsVisitante()){
-            estatisticaTemporadaTimeService.aumentarQuantidadePontos(1, partida.getTimeMandante(), partida.getTemporada());
-            estatisticaTemporadaTimeService.aumentarQuantidadePontos(1, partida.getTimeVisitante(), partida.getTemporada());
-            estatisticasCampeonatoService.aumentarQuantidadePontos(2, partida.getTemporada().getCampeonato());
-        } else if (partida.getGolsMandante() > partida.getGolsVisitante()){
-            estatisticaTemporadaTimeService.aumentarQuantidadePontos(3, partida.getTimeMandante(), partida.getTemporada());
-            estatisticasCampeonatoService.aumentarQuantidadePontos(3, partida.getTemporada().getCampeonato());
+        if (partidaAtualizada.getGolsMandante() == sumula.getGolsVisitante()){
+            estatisticaTemporadaTimeService.aumentarQuantidadePontos(1, partidaAtualizada.getTimeMandante(), partidaAtualizada.getTemporada());
+            estatisticaTemporadaTimeService.aumentarQuantidadePontos(1, partidaAtualizada.getTimeVisitante(), partidaAtualizada.getTemporada());
+            estatisticasCampeonatoService.aumentarQuantidadePontos(2, partidaAtualizada.getTemporada().getCampeonato());
+        } else if (partidaAtualizada.getGolsMandante() > partidaAtualizada.getGolsVisitante()){
+            estatisticaTemporadaTimeService.aumentarQuantidadePontos(3, partidaAtualizada.getTimeMandante(), partidaAtualizada.getTemporada());
+            estatisticasCampeonatoService.aumentarQuantidadePontos(3, partidaAtualizada.getTemporada().getCampeonato());
         } else {
-            estatisticaTemporadaTimeService.aumentarQuantidadePontos(3, partida.getTimeVisitante(), partida.getTemporada());
-            estatisticasCampeonatoService.aumentarQuantidadePontos(3, partida.getTemporada().getCampeonato());
+            estatisticaTemporadaTimeService.aumentarQuantidadePontos(3, partidaAtualizada.getTimeVisitante(), partidaAtualizada.getTemporada());
+            estatisticasCampeonatoService.aumentarQuantidadePontos(3, partidaAtualizada.getTemporada().getCampeonato());
         }
 
-        estatisticaTemporadaTimeService.aumentarQuantidadePartidas(partida.getTimeMandante(), partida.getTemporada());
-        estatisticaTemporadaTimeService.aumentarQuantidadePartidas(partida.getTimeVisitante(), partida.getTemporada());
+        estatisticaTemporadaTimeService.aumentarQuantidadePartidas(partidaAtualizada.getTimeMandante(), partidaAtualizada.getTemporada());
+        estatisticaTemporadaTimeService.aumentarQuantidadePartidas(partidaAtualizada.getTimeVisitante(), partidaAtualizada.getTemporada());
 
     }
 }

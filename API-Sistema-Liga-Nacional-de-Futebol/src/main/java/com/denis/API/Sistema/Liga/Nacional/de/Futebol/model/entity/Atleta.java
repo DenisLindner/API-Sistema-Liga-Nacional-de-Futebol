@@ -55,6 +55,9 @@ public class Atleta {
     @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Vermelho> vermelhos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<EstatisticaTemporadaAtleta> estatisticaTemporadaAtletas = new ArrayList<>();
+
     public Atleta() {}
 
     public Atleta(String nome, LocalDate dataNascimento, LocalDate dataContratacao, LocalDate dataFinalContratacao, Time time) {

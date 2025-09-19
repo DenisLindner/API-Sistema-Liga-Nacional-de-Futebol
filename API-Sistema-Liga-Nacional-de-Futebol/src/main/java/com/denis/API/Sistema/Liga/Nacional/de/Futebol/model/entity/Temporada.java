@@ -36,6 +36,9 @@ public class Temporada {
     @OneToMany(mappedBy = "temporada", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Partida> partidas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "temporada", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<EstatisticaTemporadaAtleta> estatisticaTemporadaAtletas = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "id_campeonato", nullable = false)
     private Campeonato campeonato;

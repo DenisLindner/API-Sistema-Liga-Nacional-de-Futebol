@@ -2,11 +2,11 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.GolRequest;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Atleta;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Gol;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Partida;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.AtletaRepository;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.GolRepository;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.PartidaRepository;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TimeRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -15,23 +15,20 @@ public class GolService {
 
     private GolRepository golRepository;
     private AtletaRepository atletaRepository;
-    private TimeRepository timeRepository;
-    private PartidaRepository partidaRepository;
 
-    public GolService(GolRepository golRepository,  AtletaRepository atletaRepository, PartidaRepository partidaRepository, TimeRepository timeRepository) {
+    public GolService(GolRepository golRepository,  AtletaRepository atletaRepository) {
         this.golRepository = golRepository;
         this.atletaRepository = atletaRepository;
-        this.partidaRepository = partidaRepository;
-        this.timeRepository = timeRepository;
     }
 
-    public Gol cadastrarGol(GolRequest dto) {
+    public Gol cadastrarGol(GolRequest dto, Partida partida) {
         try {
             Gol gol = new Gol();
             gol.setMinuto(dto.minuto());
-            gol.setAtleta(atletaRepository.findById(dto.idAtleta()).orElseThrow());
-            gol.setPartida(partidaRepository.findById(dto.idPartida()).orElseThrow());
-            gol.setTime(timeRepository.findById(dto.idTime()).orElseThrow());
+            Atleta atleta = atletaRepository.findById(dto.idAtleta()).orElseThrow();
+            gol.setAtleta(atleta);
+            gol.setPartida(partida);
+            gol.setTime(atleta.getTime());
 
             return golRepository.save(gol);
         } catch (DataIntegrityViolationException e){
