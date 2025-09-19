@@ -32,5 +32,4 @@ public class AtletaController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
 }

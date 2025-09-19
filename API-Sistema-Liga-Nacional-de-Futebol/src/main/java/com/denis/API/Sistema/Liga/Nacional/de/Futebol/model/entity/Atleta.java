@@ -21,9 +21,6 @@ public class Atleta {
     @Column(name = "nome", length = 100, nullable = false)
     private String nome;
 
-    @Column(name = "cpf",  length = 11,  nullable = false, unique = true)
-    private String cpf;
-
     @Column(name = "data_nascimento", nullable = false)
     private LocalDate dataNascimento;
 
@@ -60,19 +57,17 @@ public class Atleta {
 
     public Atleta() {}
 
-    public Atleta(String nome, String cpf, LocalDate dataNascimento, LocalDate dataContratacao, LocalDate dataFinalContratacao, Time time) {
+    public Atleta(String nome, LocalDate dataNascimento, LocalDate dataContratacao, LocalDate dataFinalContratacao, Time time) {
         this.nome = nome;
-        this.cpf = cpf;
         this.dataNascimento = dataNascimento;
         this.dataContratacao = dataContratacao;
         this.dataFinalContratacao = dataFinalContratacao;
         this.time = time;
     }
 
-    public Atleta(Long id, String nome, String cpf, LocalDate dataNascimento, LocalDate dataContratacao, LocalDate dataFinalContratacao, int quantidadePartidas, int cartoesAmarelos, int cartoesVermelhos, int quantidadeGols, Time time) {
+    public Atleta(Long id, String nome, LocalDate dataNascimento, LocalDate dataContratacao, LocalDate dataFinalContratacao, int quantidadePartidas, int cartoesAmarelos, int cartoesVermelhos, int quantidadeGols, Time time) {
         this.id = id;
         this.nome = nome;
-        this.cpf = cpf;
         this.dataNascimento = dataNascimento;
         this.dataContratacao = dataContratacao;
         this.dataFinalContratacao = dataFinalContratacao;

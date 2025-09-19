@@ -5,10 +5,9 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.NoticiaResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.NoticiaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/noticia")
@@ -24,5 +23,10 @@ public class NoticiaController {
     public ResponseEntity<NoticiaResponse> cadastrarNoticia(@RequestBody NoticiaRequest dto) {
         NoticiaResponse noticia = noticiaService.cadastrarNoticia(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(noticia);
+    }
+
+    @GetMapping("/ultimas-10-noticias")
+    public ResponseEntity<List<NoticiaResponse>> ultimas10Noticias() {
+        return ResponseEntity.status(HttpStatus.OK).body(noticiaService.ultimas10Noticias());
     }
 }
