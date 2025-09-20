@@ -2,7 +2,9 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EstatisticaTemporadaAtletaResponse;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EstatisticaTemporadaAtletaResponseAmarelos;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EstatisticaTemporadaAtletaResponseGols;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EstatisticaTemporadaAtletaResponseVermelhos;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Atleta;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.EstatisticaTemporadaAtleta;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
@@ -33,13 +35,14 @@ public class EstatisticaTemporadaAtletaService {
         }
     }
 
-    public List<EstatisticaTemporadaAtletaResponse> buscarTop5GolsTemporada(Long idTemporada) {
+    public List<EstatisticaTemporadaAtletaResponseGols> buscarTop5GolsTemporada(Long id) {
         try {
-            Temporada temporada = temporadaService.buscarTemporadaPorId(idTemporada);
-            List<EstatisticaTemporadaAtleta> estatisticaTemporadaAtletas = estatisticaTemporadaAtletaRepository.findTop5ByTemporadaOrderByQuantidadeGolsDesc(temporada);
-            List<EstatisticaTemporadaAtletaResponse> estatisticaTemporadaAtletaResponse = new ArrayList<>();
+            List<EstatisticaTemporadaAtleta> estatisticaTemporadaAtletas = estatisticaTemporadaAtletaRepository.findTop5ByTemporadaOrderByQuantidadeGolsDesc(temporadaService.buscarTemporadaPorId(id));
+            List<EstatisticaTemporadaAtletaResponseGols> estatisticaTemporadaAtletaResponse = new ArrayList<>();
             for (EstatisticaTemporadaAtleta estatisticaTemporadaAtleta : estatisticaTemporadaAtletas) {
-                estatisticaTemporadaAtletaResponse.add(new EstatisticaTemporadaAtletaResponse(estatisticaTemporadaAtleta.getId(), estatisticaTemporadaAtleta.getAtleta().getNome(), estatisticaTemporadaAtleta.getTemporada().getNome(), estatisticaTemporadaAtleta.getCartoesAmarelos(), estatisticaTemporadaAtleta.getCartoesVermelhos(), estatisticaTemporadaAtleta.getQuantidadeGols()));
+                if (estatisticaTemporadaAtleta.getQuantidadeGols() > 0){
+                    estatisticaTemporadaAtletaResponse.add(new EstatisticaTemporadaAtletaResponseGols(estatisticaTemporadaAtleta.getId(), estatisticaTemporadaAtleta.getAtleta().getNome(), estatisticaTemporadaAtleta.getTemporada().getNome(), estatisticaTemporadaAtleta.getQuantidadeGols()));
+                }
             }
             return estatisticaTemporadaAtletaResponse;
         } catch (Exception e) {
@@ -47,17 +50,31 @@ public class EstatisticaTemporadaAtletaService {
         }
     }
 
-    public List<EstatisticaTemporadaAtleta> buscarTop5AmarelosTemporada(Temporada temporada) {
+    public List<EstatisticaTemporadaAtletaResponseAmarelos> buscarTop5AmarelosTemporada(Long id) {
         try {
-            return estatisticaTemporadaAtletaRepository.findTop5ByTemporadaOrderByCartoesAmarelosDesc(temporada);
+            List<EstatisticaTemporadaAtleta> estatisticaTemporadaAtletas = estatisticaTemporadaAtletaRepository.findTop5ByTemporadaOrderByCartoesAmarelosDesc(temporadaService.buscarTemporadaPorId(id));
+            List<EstatisticaTemporadaAtletaResponseAmarelos>  estatisticaTemporadaAtletaResponse = new ArrayList<>();
+            for (EstatisticaTemporadaAtleta estatisticaTemporadaAtleta : estatisticaTemporadaAtletas) {
+                if (estatisticaTemporadaAtleta.getCartoesAmarelos() > 0){
+                    estatisticaTemporadaAtletaResponse.add(new EstatisticaTemporadaAtletaResponseAmarelos(estatisticaTemporadaAtleta.getId(), estatisticaTemporadaAtleta.getAtleta().getNome(), estatisticaTemporadaAtleta.getTemporada().getNome(), estatisticaTemporadaAtleta.getCartoesAmarelos()));
+                }
+            }
+            return estatisticaTemporadaAtletaResponse;
         } catch (Exception e) {
             throw new BuscarException("Erro ao buscar Top 5 de Amarelos Temporada");
         }
     }
 
-    public List<EstatisticaTemporadaAtleta> buscarTop5VermelhosTemporada(Temporada temporada) {
+    public List<EstatisticaTemporadaAtletaResponseVermelhos> buscarTop5VermelhosTemporada(Long id) {
         try {
-            return estatisticaTemporadaAtletaRepository.findTop5ByTemporadaOrderByCartoesVermelhosDesc(temporada);
+            List<EstatisticaTemporadaAtleta> estatisticaTemporadaAtletas = estatisticaTemporadaAtletaRepository.findTop5ByTemporadaOrderByCartoesVermelhosDesc(temporadaService.buscarTemporadaPorId(id));
+            List<EstatisticaTemporadaAtletaResponseVermelhos>  estatisticaTemporadaAtletaResponse = new ArrayList<>();
+            for (EstatisticaTemporadaAtleta estatisticaTemporadaAtleta : estatisticaTemporadaAtletas) {
+                if (estatisticaTemporadaAtleta.getCartoesVermelhos() > 0){
+                    estatisticaTemporadaAtletaResponse.add(new EstatisticaTemporadaAtletaResponseVermelhos(estatisticaTemporadaAtleta.getId(), estatisticaTemporadaAtleta.getAtleta().getNome(), estatisticaTemporadaAtleta.getTemporada().getNome(), estatisticaTemporadaAtleta.getCartoesVermelhos()));
+                }
+            }
+            return estatisticaTemporadaAtletaResponse;
         } catch (Exception e) {
             throw new BuscarException("Erro ao buscar Top 5 de Vermelhos Temporada");
         }

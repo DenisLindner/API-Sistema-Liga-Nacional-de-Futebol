@@ -17,7 +17,6 @@ public class SumulaService {
 
     private PartidaService partidaService;
     private AtletaService atletaService;
-    private TimeService timeService;
     private AmareloService amareloService;
     private VermelhoService vermelhoService;
     private GolService golService;
@@ -25,10 +24,9 @@ public class SumulaService {
     private EstatisticaTemporadaTimeService estatisticaTemporadaTimeService;
     private EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService;
 
-    public SumulaService(PartidaService partidaService, AtletaService atletaService,  TimeService timeService, AmareloService amareloService, VermelhoService vermelhoService, GolService golService, EstatisticasCampeonatoService estatisticasCampeonatoService, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService,  EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService) {
+    public SumulaService(PartidaService partidaService, AtletaService atletaService, AmareloService amareloService, VermelhoService vermelhoService, GolService golService, EstatisticasCampeonatoService estatisticasCampeonatoService, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService,  EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService) {
         this.partidaService = partidaService;
         this.atletaService = atletaService;
-        this.timeService = timeService;
         this.amareloService = amareloService;
         this.vermelhoService = vermelhoService;
         this.golService = golService;

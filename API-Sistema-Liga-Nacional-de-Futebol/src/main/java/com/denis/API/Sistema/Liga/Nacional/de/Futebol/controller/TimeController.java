@@ -1,5 +1,6 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.controller;
 
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.AtletaResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TimeRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TimeResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.TimeService;
@@ -31,6 +32,11 @@ public class TimeController {
             timeService.cadastrarTime(time);
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/buscar-elenco-time")
+    public ResponseEntity<List<AtletaResponse>> buscarElencoTime(@RequestParam Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(timeService.buscarElencoTime(id));
     }
 
     @DeleteMapping("/deletar-time")

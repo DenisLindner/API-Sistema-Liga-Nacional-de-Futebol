@@ -31,7 +31,7 @@ public class AtletaService {
             atleta.setTime(timeService.buscarTimePorId(dto.idTime()));
 
             Atleta salvo = atletaRepository.save(atleta);
-            return new AtletaResponse(salvo.getId(), salvo.getNome(), salvo.getDataNascimento(), salvo.getDataContratacao(), salvo.getDataFinalContratacao(), salvo.getQuantidadePartidas(), salvo.getCartoesAmarelos(), salvo.getCartoesVermelhos(), salvo.getQuantidadeGols(), salvo.getTime().getNome());
+            return new AtletaResponse(salvo.getId(), salvo.getNome(), salvo.getDataNascimento(), salvo.getDataContratacao(), salvo.getDataFinalContratacao(), salvo.getTime().getNome());
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Atleta: Dados Inválidos");
         } catch (Exception e) {

@@ -3,10 +3,14 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.*;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Atleta;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TimeRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TimeService {
@@ -63,6 +67,21 @@ public class TimeService {
             throw new BuscarException("Erro ao buscar Time: Dados Inválidos");
         } catch (Exception e) {
             throw new BuscarException("Erro inesperado ao buscar Time");
+        }
+    }
+
+    public List<AtletaResponse> buscarElencoTime(Long id){
+        try {
+            Time time = timeRepository.findById(id).orElseThrow();
+            List<AtletaResponse> atletas = new ArrayList<>();
+            for (Atleta atleta : time.getAtletas()){
+                atletas.add(new AtletaResponse(atleta.getId(), atleta.getNome(), atleta.getDataNascimento(), atleta.getDataContratacao(), atleta.getDataFinalContratacao(), atleta.getTime().getNome()));
+            }
+            return atletas;
+        } catch (DataIntegrityViolationException e){
+            throw new BuscarException("Erro ao Buscar Elenco do Time: Dados Inválidos");
+        } catch (Exception e) {
+            throw new BuscarException("Erro inesperado ao Buscar Elenco");
         }
     }
 }

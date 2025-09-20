@@ -1,9 +1,6 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.controller;
 
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EstatisticaTemporadaAtletaResponse;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TemporadaRequest;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TemporadaResponse;
-import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TimeResponseTabela;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.*;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.EstatisticaTemporadaAtletaService;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.TemporadaService;
 import org.springframework.http.HttpStatus;
@@ -31,12 +28,22 @@ public class TemporadaController {
     }
 
     @GetMapping("/tabela-atualizada-temporada")
-    public List<TimeResponseTabela> mostrarTabelaTemporada(@RequestParam Long idTemporada){
-        return temporadaService.mostrarTabelaTemporada(idTemporada);
+    public ResponseEntity<List<TimeResponseTabela>> mostrarTabelaTemporada(@RequestParam Long idTemporada){
+        return ResponseEntity.status(HttpStatus.OK).body(temporadaService.mostrarTabelaTemporada(idTemporada));
     }
 
-    @GetMapping("/top-5-artilheiros")
-    public List<EstatisticaTemporadaAtletaResponse> buscarTop5GolsTemporada(@RequestParam Long idTemporada){
-        return estatisticaTemporadaAtletaService.buscarTop5GolsTemporada(idTemporada);
+    @GetMapping("/top-5-gols")
+    public ResponseEntity<List<EstatisticaTemporadaAtletaResponseGols>> buscarTop5GolsTemporada(@RequestParam Long idTemporada){
+        return ResponseEntity.status(HttpStatus.OK).body(estatisticaTemporadaAtletaService.buscarTop5GolsTemporada(idTemporada));
+    }
+
+    @GetMapping("/top-5-amarelos")
+    public ResponseEntity<List<EstatisticaTemporadaAtletaResponseAmarelos>> buscarTop5AmarelosTemporada(@RequestParam Long idTemporada){
+        return ResponseEntity.status(HttpStatus.OK).body(estatisticaTemporadaAtletaService.buscarTop5AmarelosTemporada(idTemporada));
+    }
+
+    @GetMapping("/top-5-vermelhos")
+    public ResponseEntity<List<EstatisticaTemporadaAtletaResponseVermelhos>> buscarTop5VermelhosTemporada(@RequestParam Long idTemporada){
+        return ResponseEntity.status(HttpStatus.OK).body(estatisticaTemporadaAtletaService.buscarTop5VermelhosTemporada(idTemporada));
     }
 }
