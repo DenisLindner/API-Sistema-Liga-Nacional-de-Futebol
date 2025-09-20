@@ -1,6 +1,7 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.controller;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.AtletaResponse;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.PartidaResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TimeRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TimeResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.TimeService;
@@ -37,6 +38,11 @@ public class TimeController {
     @GetMapping("/buscar-elenco-time")
     public ResponseEntity<List<AtletaResponse>> buscarElencoTime(@RequestParam Long id){
         return ResponseEntity.status(HttpStatus.OK).body(timeService.buscarElencoTime(id));
+    }
+
+    @GetMapping("/buscar-proximas-5-partidas")
+    public ResponseEntity<List<PartidaResponse>> buscarProximas5Partidas(@RequestParam Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(timeService.buscarProximas5Partidas(id));
     }
 
     @DeleteMapping("/deletar-time")
