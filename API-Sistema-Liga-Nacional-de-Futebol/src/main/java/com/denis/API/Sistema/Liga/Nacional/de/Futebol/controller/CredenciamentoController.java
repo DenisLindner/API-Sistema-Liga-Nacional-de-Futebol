@@ -5,10 +5,7 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CredenciamentoRe
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.CredenciamentoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/credenciamento")
@@ -24,5 +21,10 @@ public class CredenciamentoController {
     public ResponseEntity<CredenciamentoResponse> cadastrarCredenciamento(@RequestBody CredenciamentoRequest dto){
         CredenciamentoResponse credenciamento = credenciamentoService.cadastrarCredenciamento(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(credenciamento);
+    }
+
+    @GetMapping("/verificar-status-credenciamento")
+    public ResponseEntity<String> verificarStatusCredenciamento(@RequestParam Long idCredenciamento){
+        return ResponseEntity.status(HttpStatus.OK).body(credenciamentoService.statusCredenciamento(idCredenciamento));
     }
 }

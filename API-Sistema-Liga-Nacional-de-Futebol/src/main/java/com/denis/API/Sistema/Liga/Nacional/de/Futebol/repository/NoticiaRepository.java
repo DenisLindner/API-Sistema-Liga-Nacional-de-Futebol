@@ -8,4 +8,6 @@ import java.util.List;
 public interface NoticiaRepository extends JpaRepository<Noticia, Long> {
 
     List<Noticia> findTop10ByOrderByIdDesc();
+
+    List<Noticia> findTop5ByTituloContaining(String titulo);
 }

@@ -23,6 +23,12 @@ public class Credenciamento {
     @Column(name = "nome", length = 100, nullable = false)
     private String nome;
 
+    @Column(name = "status", nullable = false)
+    private Boolean status = false;
+
+    @Column(name = "verificado", nullable = false)
+    private Boolean verificado = false;
+
     @ManyToOne
     @JoinColumn(name = "id_empresa", nullable = false)
     private Empresa empresa;

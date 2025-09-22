@@ -1,5 +1,6 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EmpresaRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.EmpresaResponse;
@@ -8,6 +9,9 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.EmpresaReposito
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EmpresaService {
@@ -28,6 +32,20 @@ public class EmpresaService {
             throw new CadastroException("Erro ao cadastrar Empresa: Dados Inválidos");
         } catch (Exception e) {
             throw new CadastroException("Erro inesperado ao cadastrar Empresa");
+        }
+    }
+
+    public List<EmpresaResponse> buscarTodasEmpresas(){
+        try{
+            List<Empresa> empresas = empresaRepository.findAll();
+
+            List<EmpresaResponse> empresaResponses = new ArrayList<>();
+            for (Empresa empresa : empresas) {
+                empresaResponses.add(new EmpresaResponse(empresa.getId(), empresa.getNomeEmpresarial(), empresa.getNomeFantasia(), empresa.getCnpj(), empresa.getTelefone()));
+            }
+            return empresaResponses;
+        } catch (Exception e) {
+            throw new BuscarException("Erro ao Buscar Todas Empresas");
         }
     }
 }

@@ -56,4 +56,20 @@ public class NoticiaService {
             throw new BuscarException("Erro ao Buscar Últimas 10 Noticias");
         }
     }
+
+    public List<NoticiaResponse> buscarNoticiasTitulo(String titulo){
+        try {
+            List<Noticia> noticias = noticiaRepository.findTop5ByTituloContaining(titulo);
+            List<NoticiaResponse> noticiasResponse = new ArrayList<>();
+
+            for (Noticia noticia : noticias) {
+                noticiasResponse.add(new NoticiaResponse(noticia.getId(), noticia.getAutor(), noticia.getTitulo(), noticia.getDescricao(), noticia.getConteudo(), noticia.getEmpresa().getNomeFantasia()));
+            }
+            return noticiasResponse;
+        } catch (DataIntegrityViolationException e){
+            throw new BuscarException("Erro ao Buscar Noticias: Dados Inválidos");
+        } catch (Exception e){
+            throw new BuscarException("Erro ao Buscar Notícias pelo nome");
+        }
+    }
 }

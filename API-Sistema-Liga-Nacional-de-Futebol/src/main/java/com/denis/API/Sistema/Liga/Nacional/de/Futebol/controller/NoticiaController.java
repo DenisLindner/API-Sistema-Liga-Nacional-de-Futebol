@@ -29,4 +29,9 @@ public class NoticiaController {
     public ResponseEntity<List<NoticiaResponse>> ultimas10Noticias() {
         return ResponseEntity.status(HttpStatus.OK).body(noticiaService.ultimas10Noticias());
     }
+
+    @GetMapping("/buscar-noticias-titulo")
+    public ResponseEntity<List<NoticiaResponse>> buscarNoticiasTitulo(@RequestParam String titulo) {
+        return ResponseEntity.status(HttpStatus.OK).body(noticiaService.buscarNoticiasTitulo(titulo));
+    }
 }
