@@ -44,6 +44,9 @@ public class Time {
     @OneToMany(mappedBy = "time", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Gol> gols = new ArrayList<>();
 
+    @OneToMany(mappedBy = "time", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CampeaoTemporada> campeaoTemporadas = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "id_campeonato", nullable = false)
     private Campeonato campeonato;

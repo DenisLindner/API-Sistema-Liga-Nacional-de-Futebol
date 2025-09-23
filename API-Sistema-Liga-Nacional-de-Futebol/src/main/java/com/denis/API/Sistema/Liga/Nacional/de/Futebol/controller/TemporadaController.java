@@ -1,6 +1,7 @@
 package com.denis.API.Sistema.Liga.Nacional.de.Futebol.controller;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.*;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.CampeaoTemporadaService;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.EstatisticaTemporadaAtletaService;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.service.TemporadaService;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,12 @@ public class TemporadaController {
 
     private TemporadaService temporadaService;
     private EstatisticaTemporadaAtletaService  estatisticaTemporadaAtletaService;
+    private CampeaoTemporadaService campeaoTemporadaService;
 
-    public TemporadaController(TemporadaService temporadaService, EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService) {
+    public TemporadaController(TemporadaService temporadaService, EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService, CampeaoTemporadaService campeaoTemporadaService) {
         this.temporadaService = temporadaService;
         this.estatisticaTemporadaAtletaService = estatisticaTemporadaAtletaService;
+        this.campeaoTemporadaService = campeaoTemporadaService;
     }
 
     @PostMapping("/cadastrar-temporada")
@@ -45,5 +48,21 @@ public class TemporadaController {
     @GetMapping("/top-5-vermelhos")
     public ResponseEntity<List<EstatisticaTemporadaAtletaResponseVermelhos>> buscarTop5VermelhosTemporada(@RequestParam Long idTemporada){
         return ResponseEntity.status(HttpStatus.OK).body(estatisticaTemporadaAtletaService.buscarTop5VermelhosTemporada(idTemporada));
+    }
+
+    @GetMapping("/campeao-temporada")
+    public ResponseEntity<CampeaoTemporadaResponse> buscarCampeaoTemporada(@RequestParam Long idTemporada){
+        return ResponseEntity.status(HttpStatus.OK).body(campeaoTemporadaService.buscarCampeaoTemporada(idTemporada));
+    }
+
+    @GetMapping("/todos-campeoes")
+    public ResponseEntity<List<CampeaoTemporadaResponse>> buscarCampeoesTemporadas(){
+        return ResponseEntity.status(HttpStatus.OK).body(campeaoTemporadaService.buscarCampeoesTemporadas());
+    }
+
+    @DeleteMapping("/deletar-temporada")
+    public ResponseEntity<Void> deletarTemporada(@RequestParam Long idTemporada){
+        temporadaService.deletarTemporada(idTemporada);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }

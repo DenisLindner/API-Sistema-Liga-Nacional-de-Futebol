@@ -4,10 +4,12 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.calculos.CalculoPartidasTe
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.calculos.CalculoTabelaTemporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.DeletarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.PartidaRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TemporadaRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TemporadaResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.TimeResponseTabela;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Partida;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.repository.TemporadaRepository;
@@ -25,15 +27,17 @@ public class TemporadaService {
     private CampeonatoService campeonatoService;
     private CalculoPartidasTemporada calculoPartidasTemporada;
     private PartidaService partidaService;
+    private CampeaoTemporadaService campeaoTemporadaService;
 
 
-    public TemporadaService(TemporadaRepository temporadaRepository, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService, CampeonatoService campeonatoService, CalculoPartidasTemporada calculoPartidasTemporada, PartidaService partidaService, CalculoTabelaTemporada calculoTabelaTemporada) {
+    public TemporadaService(TemporadaRepository temporadaRepository, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService, CampeonatoService campeonatoService, CalculoPartidasTemporada calculoPartidasTemporada, PartidaService partidaService, CalculoTabelaTemporada calculoTabelaTemporada,  CampeaoTemporadaService campeaoTemporadaService) {
         this.temporadaRepository = temporadaRepository;
         this.estatisticaTemporadaTimeService = estatisticaTemporadaTimeService;
         this.campeonatoService = campeonatoService;
         this.calculoPartidasTemporada = calculoPartidasTemporada;
         this.partidaService = partidaService;
         this.calculoTabelaTemporada = calculoTabelaTemporada;
+        this.campeaoTemporadaService = campeaoTemporadaService;
     }
 
     public TemporadaResponse cadastrarTemporada (TemporadaRequest dto){
@@ -87,6 +91,37 @@ public class TemporadaService {
             throw new BuscarException("Erro ao buscar Temporada: Dados Inválidos");
         } catch (Exception e) {
             throw new BuscarException("Erro inesperado ao buscar Temporada");
+        }
+    }
+
+    public void verificarStatusTemporada(Temporada temporada){
+        try {
+            List<Partida> partidas = partidaService.verificarStatusTemporada(temporada);
+            if (!partidas.isEmpty()){
+                temporada.setConcluido(true);
+                temporadaRepository.save(temporada);
+                campeaoTemporadaService.cadastrarCampeao(buscarLiderTabelaTemporada(temporada), temporada);
+            }
+        } catch (Exception e) {
+            throw new BuscarException("Erro ao verificar Temporada");
+        }
+    }
+
+    public Time buscarLiderTabelaTemporada(Temporada temporada){
+        try {
+            return calculoTabelaTemporada.buscarLider(temporada);
+        } catch (Exception e) {
+            throw new BuscarException("Erro ao buscar Temporada");
+        }
+    }
+
+    public void deletarTemporada(Long idTemporada){
+        try {
+            temporadaRepository.deleteById(idTemporada);
+        } catch (DataIntegrityViolationException e){
+            throw new DeletarException("Erro ao deletar Temporada: Dados Inválidos");
+        } catch (Exception e) {
+            throw new DeletarException("Erro inesperado ao deletar Temporada");
         }
     }
 }

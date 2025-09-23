@@ -81,4 +81,12 @@ public class PartidaService {
             throw new CadastroException("Erro inesperado ao atualizar Partida");
         }
     }
+
+    public List<Partida> verificarStatusTemporada(Temporada temporada){
+        try {
+            return partidaRepository.findTop2ByTemporadaAndConcluido(temporada, false);
+        } catch (Exception e) {
+            throw new BuscarException("Erro ao buscar Partidas");
+        }
+    }
 }

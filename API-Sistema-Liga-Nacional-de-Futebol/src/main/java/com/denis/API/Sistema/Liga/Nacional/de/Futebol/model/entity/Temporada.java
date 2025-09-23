@@ -43,6 +43,9 @@ public class Temporada {
     @JoinColumn(name = "id_campeonato", nullable = false)
     private Campeonato campeonato;
 
+    @OneToOne(mappedBy = "temporada")
+    private CampeaoTemporada campeaoTemporada;
+
     public Temporada() {}
 
     public Temporada(String nome,LocalDate dataInicio,LocalDate dataFim,Campeonato campeonato) {

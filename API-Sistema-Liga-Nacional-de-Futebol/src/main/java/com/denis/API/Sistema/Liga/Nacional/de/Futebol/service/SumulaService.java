@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 public class SumulaService {
 
+    private final TemporadaService temporadaService;
     private PartidaService partidaService;
     private AtletaService atletaService;
     private AmareloService amareloService;
@@ -24,7 +25,7 @@ public class SumulaService {
     private EstatisticaTemporadaTimeService estatisticaTemporadaTimeService;
     private EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService;
 
-    public SumulaService(PartidaService partidaService, AtletaService atletaService, AmareloService amareloService, VermelhoService vermelhoService, GolService golService, EstatisticasCampeonatoService estatisticasCampeonatoService, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService,  EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService) {
+    public SumulaService(PartidaService partidaService, AtletaService atletaService, AmareloService amareloService, VermelhoService vermelhoService, GolService golService, EstatisticasCampeonatoService estatisticasCampeonatoService, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService, EstatisticaTemporadaAtletaService estatisticaTemporadaAtletaService, TemporadaService temporadaService) {
         this.partidaService = partidaService;
         this.atletaService = atletaService;
         this.amareloService = amareloService;
@@ -33,6 +34,7 @@ public class SumulaService {
         this.estatisticasCampeonatoService = estatisticasCampeonatoService;
         this.estatisticaTemporadaTimeService = estatisticaTemporadaTimeService;
         this.estatisticaTemporadaAtletaService = estatisticaTemporadaAtletaService;
+        this.temporadaService = temporadaService;
     }
 
     public void cadastrarSumula(SumulaRequest dto){
@@ -40,6 +42,9 @@ public class SumulaService {
             Partida partida = partidaService.buscarPartidaPorId(dto.idPartida());
             if (partida.isConcluido()){
                 throw new VerificarException("Erro ao verificar Sumula: Partida já foi concluída");
+            }
+            if (partida.getTemporada().isConcluido()){
+                throw new VerificarException("Erro ao verificar Sumula: Temporada já foi concluido");
             }
             if (dto.golsMandante() < 0){
                 throw new VerificarException("Erro ao verificar Sumula: Gols do Mandante Inválido");
@@ -208,5 +213,6 @@ public class SumulaService {
         estatisticaTemporadaTimeService.aumentarQuantidadePartidas(partidaAtualizada.getTimeMandante(), partidaAtualizada.getTemporada());
         estatisticaTemporadaTimeService.aumentarQuantidadePartidas(partidaAtualizada.getTimeVisitante(), partidaAtualizada.getTemporada());
 
+        temporadaService.verificarStatusTemporada(partidaAtualizada.getTemporada());
     }
 }
