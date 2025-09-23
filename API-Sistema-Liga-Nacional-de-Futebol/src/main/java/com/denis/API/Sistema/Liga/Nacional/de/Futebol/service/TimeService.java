@@ -2,6 +2,7 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.VerificarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.*;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Atleta;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Partida;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,10 +33,14 @@ public class TimeService {
 
     public TimeResponse cadastrarTime (TimeRequest dto) {
         try {
+            if (dto.divisao() != 1 && dto.divisao() != 2){
+                throw new VerificarException("Erro inesperado ao Cadastrar Time");
+            }
             Time time = new Time();
             time.setNome(dto.nome());
             time.setEstadio(dto.estadio());
             time.setNomeTreinador(dto.nomeTreinador());
+            time.setDivisao(dto.divisao());
             time.setCampeonato(campeonatoService.buscarCampeonatoPorId(dto.idCampeonato()));
 
             if (time.getCampeonato().getTimes().size() >= 20){
@@ -47,7 +51,7 @@ public class TimeService {
 
                 estatisticaTotalTimeService.cadastrarEstatisticaTotalTime(salvo);
 
-                return new TimeResponse(salvo.getId(), salvo.getNome(), salvo.getEstadio(), salvo.getNomeTreinador(), salvo.getCampeonato().getNome());
+                return new TimeResponse(salvo.getId(), salvo.getNome(), salvo.getEstadio(), salvo.getNomeTreinador(), salvo.getDivisao(), salvo.getCampeonato().getNome());
             }
         } catch (DataIntegrityViolationException e){
             throw new CadastroException("Erro ao cadastrar Time: Dados Inválidos");

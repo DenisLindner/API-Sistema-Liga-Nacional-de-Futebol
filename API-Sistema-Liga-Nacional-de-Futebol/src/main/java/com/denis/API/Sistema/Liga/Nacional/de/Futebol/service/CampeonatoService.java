@@ -2,6 +2,7 @@ package com.denis.API.Sistema.Liga.Nacional.de.Futebol.service;
 
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.BuscarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.CadastroException;
+import com.denis.API.Sistema.Liga.Nacional.de.Futebol.excessoes.DeletarException;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoRequest;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.dto.CampeonatoResponse;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Campeonato;
@@ -44,6 +45,16 @@ public class CampeonatoService {
             throw new BuscarException("Erro ao buscar Campeonato: Dados Inválidos");
         } catch (Exception e) {
             throw new BuscarException("Erro inesperado ao buscar Campeonato");
+        }
+    }
+
+    public void deletarCampeonato(Long id){
+        try {
+            campeonatoRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e){
+            throw new DeletarException("Erro ao deletar Campeonato: Dados Inválidos");
+        } catch (Exception e) {
+            throw new DeletarException("Erro inesperado ao deletar Campeonato");
         }
     }
 }

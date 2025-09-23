@@ -17,8 +17,7 @@ public class CalculoPartidasTemporada {
 
     public  CalculoPartidasTemporada() {}
 
-    public List<PartidaRequest> partidas(Temporada temporada) {
-        List<Time> times = temporada.getCampeonato().getTimes();
+    public List<PartidaRequest> partidas(List<Time> times, Temporada temporada) {
         if (times.size() != 20){
             throw new CalculoPartidasException("Erro ao Calcular Partidas da Temporada: Quantidade de Times Inválida");
         }

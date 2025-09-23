@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -25,9 +26,8 @@ public class TemporadaController {
     }
 
     @PostMapping("/cadastrar-temporada")
-    public ResponseEntity<TemporadaResponse> cadastrarTemporada(@RequestBody TemporadaRequest dto) {
-        TemporadaResponse temporada = temporadaService.cadastrarTemporada(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(temporada);
+    public ResponseEntity<List<TemporadaResponse>> cadastrarTemporada(@RequestParam Long idCampeonato, @RequestParam LocalDate dataInicio, @RequestParam String nome) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(temporadaService.cadastrarTemporada(idCampeonato, dataInicio, nome));
     }
 
     @GetMapping("/tabela-atualizada-temporada")

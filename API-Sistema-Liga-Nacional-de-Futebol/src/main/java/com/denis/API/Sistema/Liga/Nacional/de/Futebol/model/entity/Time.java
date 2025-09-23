@@ -26,6 +26,9 @@ public class Time {
     @Column(name = "nome_treinador", length = 100, nullable = false)
     private String nomeTreinador;
 
+    @Column(name = "divisao", nullable = false)
+    private int divisao;
+
     @OneToMany(mappedBy = "time", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Atleta>atletas = new ArrayList<>();
 
