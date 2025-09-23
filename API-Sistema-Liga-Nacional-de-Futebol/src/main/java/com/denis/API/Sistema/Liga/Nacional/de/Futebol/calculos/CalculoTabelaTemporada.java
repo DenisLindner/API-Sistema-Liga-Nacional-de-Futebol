@@ -6,6 +6,7 @@ import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Temporada;
 import com.denis.API.Sistema.Liga.Nacional.de.Futebol.model.entity.Time;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -29,6 +30,33 @@ public class CalculoTabelaTemporada {
     public Time buscarLider(Temporada temporada) {
         List<EstatisticaTemporadaTime> estatisticaTemporadaTimes = estatisticaTemporadaTimesOrganizados(temporada);
         return estatisticaTemporadaTimes.get(0).getTime();
+    }
+
+    public List<Time> buscarTimesRebaixados(Temporada temporada) {
+        List<EstatisticaTemporadaTime> estatisticaTemporadaTimes = estatisticaTemporadaTimesOrganizados(temporada);
+        List<Time> times = new ArrayList<>();
+        Collections.reverse(estatisticaTemporadaTimes);
+        int contador = 0;
+        for(EstatisticaTemporadaTime estatisticaTemporadaTime : estatisticaTemporadaTimes){
+            contador++;
+            if (contador <= 4){
+                times.add(estatisticaTemporadaTime.getTime());
+            }
+        }
+        return times;
+    }
+
+    public List<Time> buscarTimesPromovidos(Temporada temporada) {
+        List<EstatisticaTemporadaTime> estatisticaTemporadaTimes = estatisticaTemporadaTimesOrganizados(temporada);
+        List<Time> times = new ArrayList<>();
+        int contador = 0;
+        for(EstatisticaTemporadaTime estatisticaTemporadaTime : estatisticaTemporadaTimes){
+            contador++;
+            if (contador <= 4){
+                times.add(estatisticaTemporadaTime.getTime());
+            }
+        }
+        return times;
     }
 
     public List<EstatisticaTemporadaTime> estatisticaTemporadaTimesOrganizados(Temporada temporada) {

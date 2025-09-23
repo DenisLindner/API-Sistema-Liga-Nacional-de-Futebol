@@ -30,6 +30,9 @@ public class Temporada {
     @Column(name = "data_fim", nullable = false)
     private LocalDate dataFim;
 
+    @Column(name = "divisao", nullable = false)
+    private int divisao;
+
     @OneToMany(mappedBy = "temporada", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<EstatisticaTemporadaTime> estatisticaTemporadaTimes = new ArrayList<>();
 

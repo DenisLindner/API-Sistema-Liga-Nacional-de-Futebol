@@ -25,6 +25,7 @@ import java.util.List;
 public class TemporadaService {
 
     private final CalculoTabelaTemporada calculoTabelaTemporada;
+    private final TimeService timeService;
     private TemporadaRepository temporadaRepository;
     private EstatisticaTemporadaTimeService estatisticaTemporadaTimeService;
     private CampeonatoService campeonatoService;
@@ -33,7 +34,7 @@ public class TemporadaService {
     private CampeaoTemporadaService campeaoTemporadaService;
 
 
-    public TemporadaService(TemporadaRepository temporadaRepository, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService, CampeonatoService campeonatoService, CalculoPartidasTemporada calculoPartidasTemporada, PartidaService partidaService, CalculoTabelaTemporada calculoTabelaTemporada,  CampeaoTemporadaService campeaoTemporadaService) {
+    public TemporadaService(TemporadaRepository temporadaRepository, EstatisticaTemporadaTimeService estatisticaTemporadaTimeService, CampeonatoService campeonatoService, CalculoPartidasTemporada calculoPartidasTemporada, PartidaService partidaService, CalculoTabelaTemporada calculoTabelaTemporada, CampeaoTemporadaService campeaoTemporadaService, TimeService timeService) {
         this.temporadaRepository = temporadaRepository;
         this.estatisticaTemporadaTimeService = estatisticaTemporadaTimeService;
         this.campeonatoService = campeonatoService;
@@ -41,6 +42,7 @@ public class TemporadaService {
         this.partidaService = partidaService;
         this.calculoTabelaTemporada = calculoTabelaTemporada;
         this.campeaoTemporadaService = campeaoTemporadaService;
+        this.timeService = timeService;
     }
 
     public List<TemporadaResponse> cadastrarTemporada (Long idCampeonato, LocalDate dataInicio, String nome){
@@ -79,6 +81,7 @@ public class TemporadaService {
                 temporada.setNome(nomeTemporada);
                 temporada.setDataInicio(dataInicio);
                 temporada.setDataFim(dataInicio.plusDays(((20 - 1) * 2) * 7L));
+                temporada.setDivisao(i);
                 temporada.setCampeonato(campeonato);
 
                 Temporada salvo = temporadaRepository.save(temporada);
@@ -125,6 +128,7 @@ public class TemporadaService {
                 temporada.setConcluido(true);
                 temporadaRepository.save(temporada);
                 campeaoTemporadaService.cadastrarCampeao(buscarLiderTabelaTemporada(temporada), temporada);
+                atualizarDivisaoTimes(temporada.getCampeonato());
             }
         } catch (Exception e) {
             throw new BuscarException("Erro ao verificar Temporada");
@@ -139,13 +143,51 @@ public class TemporadaService {
         }
     }
 
-    public void deletarTemporada(Long idTemporada){
+    public void atualizarDivisaoTimes(Campeonato campeonato){
         try {
-            temporadaRepository.deleteById(idTemporada);
-        } catch (DataIntegrityViolationException e){
-            throw new DeletarException("Erro ao deletar Temporada: Dados Inválidos");
+            if (verificarConclusaoTemporadas(campeonato)){
+                List<Temporada> temporadas = temporadaRepository.findTop2ByCampeonatoOrderByIdDesc(campeonato);
+                if (temporadas.isEmpty()){
+                    throw new CadastroException("Erro ao atualizar Temporada");
+                }
+                Temporada temporada1 = new Temporada();
+                Temporada temporada2 = new Temporada();
+                for (Temporada temporada : temporadas){
+                    if (temporada.getDivisao() == 1){
+                        temporada1 = temporada;
+                    } else {
+                        temporada2 = temporada;
+                    }
+                }
+                List<Time> timesRebaixados = buscarTimesRebaixados(temporada1);
+                List<Time> timesPromovidos = buscarTimesPromovidos(temporada2);
+
+                for(Time time : timesRebaixados){
+                    timeService.atualizarDivisaoTime(time, 2);
+                }
+
+                for (Time time : timesPromovidos){
+                    timeService.atualizarDivisaoTime(time, 1);
+                }
+            }
         } catch (Exception e) {
-            throw new DeletarException("Erro inesperado ao deletar Temporada");
+            throw new BuscarException("Erro ao atualizar Temporada");
+        }
+    }
+
+    public List<Time> buscarTimesRebaixados(Temporada temporada){
+        try {
+            return calculoTabelaTemporada.buscarTimesRebaixados(temporada);
+        } catch (Exception e) {
+            throw new BuscarException("Erro ao buscar Rebaixados");
+        }
+    }
+
+    public List<Time> buscarTimesPromovidos(Temporada temporada){
+        try {
+            return calculoTabelaTemporada.buscarTimesPromovidos(temporada);
+        } catch (Exception e) {
+            throw new BuscarException("Erro ao buscar Promovidos");
         }
     }
 
@@ -157,4 +199,16 @@ public class TemporadaService {
             throw new VerificarException("Erro ao verificar Conclusão de Temporadas");
         }
     }
+
+    public void deletarTemporada(Long idTemporada){
+        try {
+            temporadaRepository.deleteById(idTemporada);
+        } catch (DataIntegrityViolationException e){
+            throw new DeletarException("Erro ao deletar Temporada: Dados Inválidos");
+        } catch (Exception e) {
+            throw new DeletarException("Erro inesperado ao deletar Temporada");
+        }
+    }
+
+
 }

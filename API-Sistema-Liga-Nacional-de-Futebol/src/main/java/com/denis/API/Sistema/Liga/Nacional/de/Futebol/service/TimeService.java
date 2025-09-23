@@ -109,4 +109,15 @@ public class TimeService {
             throw new BuscarException("Erro inesperado ao Buscar Elenco");
         }
     }
+
+    public void atualizarDivisaoTime(Time time, int divisao){
+        try {
+            time.setDivisao(divisao);
+            timeRepository.save(time);
+        } catch (DataIntegrityViolationException e){
+            throw new VerificarException("Erro ao Atualizar Divisão de Time: Dados Inválidos");
+        } catch (Exception e) {
+            throw new VerificarException("Erro Inesperado ao Atualizar Divisão");
+        }
+    }
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface TemporadaRepository extends JpaRepository<Temporada,Long> {
 
     List<Temporada> findByCampeonatoAndConcluido(Campeonato campeonato, boolean concluido);
+
+    List<Temporada> findTop2ByCampeonatoOrderByIdDesc(Campeonato campeonato);
 }
